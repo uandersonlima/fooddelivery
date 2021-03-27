@@ -1,3 +1,4 @@
+using fooddelivery.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace fooddelivery.Controllers
@@ -17,6 +18,12 @@ namespace fooddelivery.Controllers
             {
                 return BadRequest($"{teste} é inválido");
             }
+        }
+
+        [HttpPut]
+        public IActionResult Update([FromBody] Address Address)
+        {
+            return Ok(new Address());
         }
     }
 }

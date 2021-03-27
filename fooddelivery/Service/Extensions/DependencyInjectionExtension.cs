@@ -2,11 +2,12 @@ using System;
 using fooddelivery.Database;
 using fooddelivery.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
+using Microsoft.AspNetCore.Mvc;
 
 namespace fooddelivery.Service.Extensions
 {
@@ -19,7 +20,12 @@ namespace fooddelivery.Service.Extensions
                 op.SuppressModelStateInvalidFilter = true;
             });
 
-            svc.AddControllers().AddNewtonsoftJson(opt => { opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; });
+            svc.AddControllers().AddNewtonsoftJson(opt => { 
+                opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                opt.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                opt.SerializerSettings.Converters.Add(new StringEnumConverter());
+            });
+
             svc.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "fooddelivery", Version = "v1" });
@@ -51,8 +57,7 @@ namespace fooddelivery.Service.Extensions
             //Banco de Dados
             string mySqlConnectionSTR = conf.GetConnectionString("FoodDeliveryContext");
             svc.AddDbContext<FoodDeliveryContext>(options =>
-            options.UseMySql(mySqlConnectionSTR, ServerVersion.AutoDetect(mySqlConnectionSTR)));
-
+            options.UseSqlite(mySqlConnectionSTR));
             svc.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<FoodDeliveryContext>().AddDefaultTokenProviders();
 
 
