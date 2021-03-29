@@ -39,7 +39,7 @@ namespace fooddelivery
                 c.RoutePrefix = "";
             });
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 
