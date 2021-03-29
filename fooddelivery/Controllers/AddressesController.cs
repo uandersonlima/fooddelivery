@@ -25,5 +25,12 @@ namespace fooddelivery.Controllers
         {
             return Ok(new Address());
         }
+
+        
+        [HttpDelete]
+        public IActionResult Delete([FromBody] Address Address)
+        {
+            return Ok(new Address());
+        }
     }
 }
