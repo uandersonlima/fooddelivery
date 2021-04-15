@@ -8,9 +8,11 @@ namespace fooddelivery.Models
         [Key]
         public int Code { get; set; }
         public string Name { get; set; }
-        
+
         [Column(TypeName = "decimal(10, 2)")]
         public decimal Price { get; set; }
         public string Unity { get; set; }
+
+        public Food Food { get; set; }
     }
 }

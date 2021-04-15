@@ -4,7 +4,8 @@ namespace fooddelivery.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class NotificationsController : ControllerBase
+    public class AuthController : ControllerBase
     {
+
     }
 }

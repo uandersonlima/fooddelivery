@@ -14,7 +14,7 @@ namespace fooddelivery.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.4");
+                .HasAnnotation("ProductVersion", "5.0.5");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -91,9 +91,11 @@ namespace fooddelivery.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
+                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderKey")
+                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderDisplayName")
@@ -131,9 +133,11 @@ namespace fooddelivery.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LoginProvider")
+                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
+                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Value")
@@ -360,6 +364,9 @@ namespace fooddelivery.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("FoodCode")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
@@ -370,6 +377,8 @@ namespace fooddelivery.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Code");
+
+                    b.HasIndex("FoodCode");
 
                     b.ToTable("Ingredients");
                 });
@@ -661,6 +670,15 @@ namespace fooddelivery.Migrations
                     b.Navigation("Food");
                 });
 
+            modelBuilder.Entity("fooddelivery.Models.Ingredient", b =>
+                {
+                    b.HasOne("fooddelivery.Models.Food", "Food")
+                        .WithMany("Ingredients")
+                        .HasForeignKey("FoodCode");
+
+                    b.Navigation("Food");
+                });
+
             modelBuilder.Entity("fooddelivery.Models.Order", b =>
                 {
                     b.HasOne("fooddelivery.Models.Address", "Address")
@@ -704,6 +722,8 @@ namespace fooddelivery.Migrations
             modelBuilder.Entity("fooddelivery.Models.Food", b =>
                 {
                     b.Navigation("Images");
+
+                    b.Navigation("Ingredients");
 
                     b.Navigation("Suborders");
                 });

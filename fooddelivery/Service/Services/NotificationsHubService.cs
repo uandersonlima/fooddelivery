@@ -5,6 +5,6 @@ namespace fooddelivery.Service.Services
 {
     public class NotificationsHubService: Hub<INotificationsHubService>
     {
-        
+
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace fooddelivery.Migrations
 {
-    public partial class fooddeliveryV1 : Migration
+    public partial class foodV1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -57,21 +57,6 @@ namespace fooddelivery.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Code);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Ingredients",
-                columns: table => new
-                {
-                    Code = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: true),
-                    Price = table.Column<decimal>(type: "decimal(10, 2)", nullable: false),
-                    Unity = table.Column<string>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ingredients", x => x.Code);
                 });
 
             migrationBuilder.CreateTable(
@@ -145,8 +130,8 @@ namespace fooddelivery.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "TEXT", nullable: false),
-                    ProviderKey = table.Column<string>(type: "TEXT", nullable: false),
+                    LoginProvider = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
+                    ProviderKey = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "TEXT", nullable: true),
                     UserId = table.Column<string>(type: "TEXT", nullable: false)
                 },
@@ -190,8 +175,8 @@ namespace fooddelivery.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    LoginProvider = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    LoginProvider = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
                     Value = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
@@ -274,54 +259,6 @@ namespace fooddelivery.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Additional",
-                columns: table => new
-                {
-                    FoodCode = table.Column<int>(type: "INTEGER", nullable: false),
-                    IngredientCode = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Additional", x => new { x.FoodCode, x.IngredientCode });
-                    table.ForeignKey(
-                        name: "FK_Additional_Foods_FoodCode",
-                        column: x => x.FoodCode,
-                        principalTable: "Foods",
-                        principalColumn: "Code",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Additional_Ingredients_IngredientCode",
-                        column: x => x.IngredientCode,
-                        principalTable: "Ingredients",
-                        principalColumn: "Code",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FoodIngredients",
-                columns: table => new
-                {
-                    FoodCode = table.Column<int>(type: "INTEGER", nullable: false),
-                    IngredientCode = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FoodIngredients", x => new { x.FoodCode, x.IngredientCode });
-                    table.ForeignKey(
-                        name: "FK_FoodIngredients_Foods_FoodCode",
-                        column: x => x.FoodCode,
-                        principalTable: "Foods",
-                        principalColumn: "Code",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_FoodIngredients_Ingredients_IngredientCode",
-                        column: x => x.IngredientCode,
-                        principalTable: "Ingredients",
-                        principalColumn: "Code",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Images",
                 columns: table => new
                 {
@@ -340,6 +277,28 @@ namespace fooddelivery.Migrations
                         principalTable: "Foods",
                         principalColumn: "Code",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ingredients",
+                columns: table => new
+                {
+                    Code = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(10, 2)", nullable: false),
+                    Unity = table.Column<string>(type: "TEXT", nullable: true),
+                    FoodCode = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ingredients", x => x.Code);
+                    table.ForeignKey(
+                        name: "FK_Ingredients_Foods_FoodCode",
+                        column: x => x.FoodCode,
+                        principalTable: "Foods",
+                        principalColumn: "Code",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -392,6 +351,54 @@ namespace fooddelivery.Migrations
                         name: "FK_Suborders_Orders_OrderCode",
                         column: x => x.OrderCode,
                         principalTable: "Orders",
+                        principalColumn: "Code",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Additional",
+                columns: table => new
+                {
+                    FoodCode = table.Column<int>(type: "INTEGER", nullable: false),
+                    IngredientCode = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Additional", x => new { x.FoodCode, x.IngredientCode });
+                    table.ForeignKey(
+                        name: "FK_Additional_Foods_FoodCode",
+                        column: x => x.FoodCode,
+                        principalTable: "Foods",
+                        principalColumn: "Code",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Additional_Ingredients_IngredientCode",
+                        column: x => x.IngredientCode,
+                        principalTable: "Ingredients",
+                        principalColumn: "Code",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FoodIngredients",
+                columns: table => new
+                {
+                    FoodCode = table.Column<int>(type: "INTEGER", nullable: false),
+                    IngredientCode = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FoodIngredients", x => new { x.FoodCode, x.IngredientCode });
+                    table.ForeignKey(
+                        name: "FK_FoodIngredients_Foods_FoodCode",
+                        column: x => x.FoodCode,
+                        principalTable: "Foods",
+                        principalColumn: "Code",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FoodIngredients_Ingredients_IngredientCode",
+                        column: x => x.IngredientCode,
+                        principalTable: "Ingredients",
                         principalColumn: "Code",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -508,6 +515,11 @@ namespace fooddelivery.Migrations
                 column: "FoodCode");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Ingredients_FoodCode",
+                table: "Ingredients",
+                column: "FoodCode");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_AddressCode",
                 table: "Orders",
                 column: "AddressCode");
@@ -568,16 +580,16 @@ namespace fooddelivery.Migrations
                 name: "Ingredients");
 
             migrationBuilder.DropTable(
-                name: "Foods");
-
-            migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Foods");
 
             migrationBuilder.DropTable(
                 name: "Addresses");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

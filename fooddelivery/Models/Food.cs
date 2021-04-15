@@ -22,5 +22,6 @@ namespace fooddelivery.Models
 
         public List<Suborder> Suborders { get; set; }
         public List<Image> Images { get; set; }
+	    public List<Ingredient> Ingredients{ get; set; }
     }
 }
