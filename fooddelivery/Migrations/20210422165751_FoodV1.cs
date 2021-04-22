@@ -1,9 +1,10 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace fooddelivery.Migrations
 {
-    public partial class foodV1 : Migration
+    public partial class FoodV1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,10 +12,10 @@ namespace fooddelivery.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true)
+                    Id = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    Name = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -25,21 +26,21 @@ namespace fooddelivery.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
-                    UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
-                    PasswordHash = table.Column<string>(type: "TEXT", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "TEXT", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    UserName = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -50,9 +51,9 @@ namespace fooddelivery.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: true)
+                    Code = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -63,11 +64,11 @@ namespace fooddelivery.Migrations
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    RoleId = table.Column<string>(type: "TEXT", nullable: false),
-                    ClaimType = table.Column<string>(type: "TEXT", nullable: true),
-                    ClaimValue = table.Column<string>(type: "TEXT", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    RoleId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    ClaimType = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    ClaimValue = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -84,15 +85,15 @@ namespace fooddelivery.Migrations
                 name: "Addresses",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Number = table.Column<string>(type: "TEXT", nullable: true),
-                    City = table.Column<string>(type: "TEXT", nullable: true),
-                    Neighborhood = table.Column<string>(type: "TEXT", nullable: true),
-                    State = table.Column<string>(type: "TEXT", nullable: true),
-                    Addon = table.Column<string>(type: "TEXT", nullable: true),
-                    Standard = table.Column<bool>(type: "INTEGER", nullable: false),
-                    UserId = table.Column<string>(type: "TEXT", nullable: false)
+                    Code = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Number = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    City = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Neighborhood = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    State = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Addon = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Standard = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -109,11 +110,11 @@ namespace fooddelivery.Migrations
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    ClaimType = table.Column<string>(type: "TEXT", nullable: true),
-                    ClaimValue = table.Column<string>(type: "TEXT", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    ClaimType = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    ClaimValue = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -130,10 +131,10 @@ namespace fooddelivery.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "TEXT", nullable: true),
-                    UserId = table.Column<string>(type: "TEXT", nullable: false)
+                    LoginProvider = table.Column<string>(type: "varchar(128) CHARACTER SET utf8mb4", maxLength: 128, nullable: false),
+                    ProviderKey = table.Column<string>(type: "varchar(128) CHARACTER SET utf8mb4", maxLength: 128, nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -150,8 +151,8 @@ namespace fooddelivery.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    RoleId = table.Column<string>(type: "TEXT", nullable: false)
+                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    RoleId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -174,10 +175,10 @@ namespace fooddelivery.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    LoginProvider = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
-                    Value = table.Column<string>(type: "TEXT", nullable: true)
+                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    LoginProvider = table.Column<string>(type: "varchar(128) CHARACTER SET utf8mb4", maxLength: 128, nullable: false),
+                    Name = table.Column<string>(type: "varchar(128) CHARACTER SET utf8mb4", maxLength: 128, nullable: false),
+                    Value = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -194,15 +195,15 @@ namespace fooddelivery.Migrations
                 name: "Contacts",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Tel = table.Column<string>(type: "TEXT", nullable: true),
-                    Email = table.Column<string>(type: "TEXT", nullable: true),
-                    Whatsapp = table.Column<string>(type: "TEXT", nullable: true),
-                    Facebook = table.Column<string>(type: "TEXT", nullable: true),
-                    Twitter = table.Column<string>(type: "TEXT", nullable: true),
-                    Instagram = table.Column<string>(type: "TEXT", nullable: true),
-                    UserId = table.Column<string>(type: "TEXT", nullable: false)
+                    Code = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Tel = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Email = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Whatsapp = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Facebook = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Twitter = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Instagram = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -219,11 +220,11 @@ namespace fooddelivery.Migrations
                 name: "Foods",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(10, 2)", nullable: false),
-                    CategoryCode = table.Column<int>(type: "INTEGER", nullable: false)
+                    Code = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    CategoryCode = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -240,12 +241,12 @@ namespace fooddelivery.Migrations
                 name: "Orders",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Price = table.Column<decimal>(type: "decimal(10, 2)", nullable: false),
-                    Note = table.Column<string>(type: "TEXT", nullable: true),
-                    DeliveryStatus = table.Column<int>(type: "INTEGER", nullable: false),
-                    AddressCode = table.Column<int>(type: "INTEGER", nullable: false)
+                    Code = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Note = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    DeliveryStatus = table.Column<int>(type: "int", nullable: false),
+                    AddressCode = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -262,11 +263,11 @@ namespace fooddelivery.Migrations
                 name: "Images",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: true),
-                    Data = table.Column<byte[]>(type: "BLOB", nullable: true),
-                    FoodCode = table.Column<int>(type: "INTEGER", nullable: false)
+                    Code = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Data = table.Column<byte[]>(type: "longblob", nullable: true),
+                    FoodCode = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -283,12 +284,12 @@ namespace fooddelivery.Migrations
                 name: "Ingredients",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: true),
-                    Price = table.Column<decimal>(type: "decimal(10, 2)", nullable: false),
-                    Unity = table.Column<string>(type: "TEXT", nullable: true),
-                    FoodCode = table.Column<int>(type: "INTEGER", nullable: true)
+                    Code = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Unity = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    FoodCode = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -305,10 +306,10 @@ namespace fooddelivery.Migrations
                 name: "Feedbacks",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    OrderCode = table.Column<int>(type: "INTEGER", nullable: false),
-                    Score = table.Column<int>(type: "INTEGER", nullable: false),
-                    Note = table.Column<string>(type: "TEXT", nullable: true)
+                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    OrderCode = table.Column<int>(type: "int", nullable: false),
+                    Score = table.Column<int>(type: "int", nullable: false),
+                    Note = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -331,12 +332,12 @@ namespace fooddelivery.Migrations
                 name: "Suborders",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Price = table.Column<decimal>(type: "decimal(10, 2)", nullable: false),
-                    Note = table.Column<string>(type: "TEXT", nullable: true),
-                    FoodCode = table.Column<int>(type: "INTEGER", nullable: false),
-                    OrderCode = table.Column<int>(type: "INTEGER", nullable: false)
+                    Code = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Note = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    FoodCode = table.Column<int>(type: "int", nullable: false),
+                    OrderCode = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -359,8 +360,8 @@ namespace fooddelivery.Migrations
                 name: "Additional",
                 columns: table => new
                 {
-                    FoodCode = table.Column<int>(type: "INTEGER", nullable: false),
-                    IngredientCode = table.Column<int>(type: "INTEGER", nullable: false)
+                    FoodCode = table.Column<int>(type: "int", nullable: false),
+                    IngredientCode = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -383,8 +384,8 @@ namespace fooddelivery.Migrations
                 name: "FoodIngredients",
                 columns: table => new
                 {
-                    FoodCode = table.Column<int>(type: "INTEGER", nullable: false),
-                    IngredientCode = table.Column<int>(type: "INTEGER", nullable: false)
+                    FoodCode = table.Column<int>(type: "int", nullable: false),
+                    IngredientCode = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -407,13 +408,13 @@ namespace fooddelivery.Migrations
                 name: "Changes",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Type = table.Column<string>(type: "TEXT", nullable: true),
-                    Count = table.Column<int>(type: "INTEGER", nullable: false),
-                    SuborderCode = table.Column<int>(type: "INTEGER", nullable: false),
-                    FoodCode = table.Column<int>(type: "INTEGER", nullable: false),
-                    IngredientCode = table.Column<int>(type: "INTEGER", nullable: false)
+                    Code = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Type = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Count = table.Column<int>(type: "int", nullable: false),
+                    SuborderCode = table.Column<int>(type: "int", nullable: false),
+                    FoodCode = table.Column<int>(type: "int", nullable: false),
+                    IngredientCode = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

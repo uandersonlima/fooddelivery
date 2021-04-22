@@ -60,7 +60,7 @@ namespace fooddelivery.Service.Extensions
             });
 
             //Banco de Dados
-            svc.AddDbContext<FoodDeliveryContext>(options => options.UseSqlite(conf.GetConnectionString("FoodDeliveryContext")));
+            svc.AddDbContext<FoodDeliveryContext>(options => options.UseMySql(conf.GetConnectionString("FoodDeliveryContext"), new MySqlServerVersion(new Version(8, 0, 20))));
 
             //Authentication
             svc.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<FoodDeliveryContext>().AddDefaultTokenProviders();

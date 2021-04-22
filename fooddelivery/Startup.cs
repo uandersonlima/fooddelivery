@@ -32,6 +32,7 @@ namespace fooddelivery
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "fooddelivery v1"));
             }
+            app.UseDeveloperExceptionPage();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
@@ -39,7 +40,7 @@ namespace fooddelivery
                 c.RoutePrefix = "";
             });
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
