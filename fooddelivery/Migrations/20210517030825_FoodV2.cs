@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace fooddelivery.Migrations
 {
-    public partial class FoodV1 : Migration
+    public partial class FoodV2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -27,6 +27,8 @@ namespace fooddelivery.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    CPF = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     UserName = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
@@ -51,13 +53,41 @@ namespace fooddelivery.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categories", x => x.Code);
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DeliveryStatus",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DeliveryStatus", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ingredients",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Unity = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ingredients", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -85,7 +115,7 @@ namespace fooddelivery.Migrations
                 name: "Addresses",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Number = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     City = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
@@ -97,7 +127,7 @@ namespace fooddelivery.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Addresses", x => x.Code);
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Addresses_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -195,7 +225,7 @@ namespace fooddelivery.Migrations
                 name: "Contacts",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Tel = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     Email = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
@@ -207,7 +237,7 @@ namespace fooddelivery.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Contacts", x => x.Code);
+                    table.PrimaryKey("PK_Contacts", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Contacts_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -220,20 +250,20 @@ namespace fooddelivery.Migrations
                 name: "Foods",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    CategoryCode = table.Column<int>(type: "int", nullable: false)
+                    CategoryId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Foods", x => x.Code);
+                    table.PrimaryKey("PK_Foods", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Foods_Categories_CategoryCode",
-                        column: x => x.CategoryCode,
+                        name: "FK_Foods_Categories_CategoryId",
+                        column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Code",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -241,118 +271,27 @@ namespace fooddelivery.Migrations
                 name: "Orders",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Note = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    DeliveryStatus = table.Column<int>(type: "int", nullable: false),
-                    AddressCode = table.Column<int>(type: "int", nullable: false)
+                    DeliveryStatusId = table.Column<long>(type: "bigint", nullable: false),
+                    AddressId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.Code);
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_Addresses_AddressCode",
-                        column: x => x.AddressCode,
+                        name: "FK_Orders_Addresses_AddressId",
+                        column: x => x.AddressId,
                         principalTable: "Addresses",
-                        principalColumn: "Code",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Images",
-                columns: table => new
-                {
-                    Code = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    Data = table.Column<byte[]>(type: "longblob", nullable: true),
-                    FoodCode = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Images", x => x.Code);
-                    table.ForeignKey(
-                        name: "FK_Images_Foods_FoodCode",
-                        column: x => x.FoodCode,
-                        principalTable: "Foods",
-                        principalColumn: "Code",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Ingredients",
-                columns: table => new
-                {
-                    Code = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    Unity = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    FoodCode = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ingredients", x => x.Code);
-                    table.ForeignKey(
-                        name: "FK_Ingredients_Foods_FoodCode",
-                        column: x => x.FoodCode,
-                        principalTable: "Foods",
-                        principalColumn: "Code",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Feedbacks",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
-                    OrderCode = table.Column<int>(type: "int", nullable: false),
-                    Score = table.Column<int>(type: "int", nullable: false),
-                    Note = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Feedbacks", x => new { x.UserId, x.OrderCode });
-                    table.ForeignKey(
-                        name: "FK_Feedbacks_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Feedbacks_Orders_OrderCode",
-                        column: x => x.OrderCode,
-                        principalTable: "Orders",
-                        principalColumn: "Code",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Suborders",
-                columns: table => new
-                {
-                    Code = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    Note = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    FoodCode = table.Column<int>(type: "int", nullable: false),
-                    OrderCode = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Suborders", x => x.Code);
-                    table.ForeignKey(
-                        name: "FK_Suborders_Foods_FoodCode",
-                        column: x => x.FoodCode,
-                        principalTable: "Foods",
-                        principalColumn: "Code",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Suborders_Orders_OrderCode",
-                        column: x => x.OrderCode,
-                        principalTable: "Orders",
-                        principalColumn: "Code",
+                        name: "FK_Orders_DeliveryStatus_DeliveryStatusId",
+                        column: x => x.DeliveryStatusId,
+                        principalTable: "DeliveryStatus",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -360,23 +299,23 @@ namespace fooddelivery.Migrations
                 name: "Additional",
                 columns: table => new
                 {
-                    FoodCode = table.Column<int>(type: "int", nullable: false),
-                    IngredientCode = table.Column<int>(type: "int", nullable: false)
+                    FoodId = table.Column<long>(type: "bigint", nullable: false),
+                    IngredientId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Additional", x => new { x.FoodCode, x.IngredientCode });
+                    table.PrimaryKey("PK_Additional", x => new { x.FoodId, x.IngredientId });
                     table.ForeignKey(
-                        name: "FK_Additional_Foods_FoodCode",
-                        column: x => x.FoodCode,
+                        name: "FK_Additional_Foods_FoodId",
+                        column: x => x.FoodId,
                         principalTable: "Foods",
-                        principalColumn: "Code",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Additional_Ingredients_IngredientCode",
-                        column: x => x.IngredientCode,
+                        name: "FK_Additional_Ingredients_IngredientId",
+                        column: x => x.IngredientId,
                         principalTable: "Ingredients",
-                        principalColumn: "Code",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -384,23 +323,98 @@ namespace fooddelivery.Migrations
                 name: "FoodIngredients",
                 columns: table => new
                 {
-                    FoodCode = table.Column<int>(type: "int", nullable: false),
-                    IngredientCode = table.Column<int>(type: "int", nullable: false)
+                    FoodId = table.Column<long>(type: "bigint", nullable: false),
+                    IngredientId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FoodIngredients", x => new { x.FoodCode, x.IngredientCode });
+                    table.PrimaryKey("PK_FoodIngredients", x => new { x.FoodId, x.IngredientId });
                     table.ForeignKey(
-                        name: "FK_FoodIngredients_Foods_FoodCode",
-                        column: x => x.FoodCode,
+                        name: "FK_FoodIngredients_Foods_FoodId",
+                        column: x => x.FoodId,
                         principalTable: "Foods",
-                        principalColumn: "Code",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_FoodIngredients_Ingredients_IngredientCode",
-                        column: x => x.IngredientCode,
+                        name: "FK_FoodIngredients_Ingredients_IngredientId",
+                        column: x => x.IngredientId,
                         principalTable: "Ingredients",
-                        principalColumn: "Code",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Data = table.Column<byte[]>(type: "longblob", nullable: true),
+                    FoodId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Images_Foods_FoodId",
+                        column: x => x.FoodId,
+                        principalTable: "Foods",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Feedbacks",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    OrderId = table.Column<long>(type: "bigint", nullable: false),
+                    Score = table.Column<int>(type: "int", nullable: false),
+                    Note = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Feedbacks", x => new { x.UserId, x.OrderId });
+                    table.ForeignKey(
+                        name: "FK_Feedbacks_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Feedbacks_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Suborders",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Note = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    FoodId = table.Column<long>(type: "bigint", nullable: false),
+                    OrderId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Suborders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Suborders_Foods_FoodId",
+                        column: x => x.FoodId,
+                        principalTable: "Foods",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Suborders_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -408,35 +422,35 @@ namespace fooddelivery.Migrations
                 name: "Changes",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Type = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     Count = table.Column<int>(type: "int", nullable: false),
-                    SuborderCode = table.Column<int>(type: "int", nullable: false),
-                    FoodCode = table.Column<int>(type: "int", nullable: false),
-                    IngredientCode = table.Column<int>(type: "int", nullable: false)
+                    SuborderId = table.Column<long>(type: "bigint", nullable: false),
+                    FoodId = table.Column<long>(type: "bigint", nullable: false),
+                    IngredientId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Changes", x => x.Code);
+                    table.PrimaryKey("PK_Changes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Changes_Additional_FoodCode_IngredientCode",
-                        columns: x => new { x.FoodCode, x.IngredientCode },
+                        name: "FK_Changes_Additional_FoodId_IngredientId",
+                        columns: x => new { x.FoodId, x.IngredientId },
                         principalTable: "Additional",
-                        principalColumns: new[] { "FoodCode", "IngredientCode" },
+                        principalColumns: new[] { "FoodId", "IngredientId" },
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Changes_Suborders_SuborderCode",
-                        column: x => x.SuborderCode,
+                        name: "FK_Changes_Suborders_SuborderId",
+                        column: x => x.SuborderId,
                         principalTable: "Suborders",
-                        principalColumn: "Code",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Additional_IngredientCode",
+                name: "IX_Additional_IngredientId",
                 table: "Additional",
-                column: "IngredientCode");
+                column: "IngredientId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_UserId",
@@ -481,14 +495,14 @@ namespace fooddelivery.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Changes_FoodCode_IngredientCode",
+                name: "IX_Changes_FoodId_IngredientId",
                 table: "Changes",
-                columns: new[] { "FoodCode", "IngredientCode" });
+                columns: new[] { "FoodId", "IngredientId" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Changes_SuborderCode",
+                name: "IX_Changes_SuborderId",
                 table: "Changes",
-                column: "SuborderCode");
+                column: "SuborderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Contacts_UserId",
@@ -496,44 +510,44 @@ namespace fooddelivery.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Feedbacks_OrderCode",
+                name: "IX_Feedbacks_OrderId",
                 table: "Feedbacks",
-                column: "OrderCode");
+                column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FoodIngredients_IngredientCode",
+                name: "IX_FoodIngredients_IngredientId",
                 table: "FoodIngredients",
-                column: "IngredientCode");
+                column: "IngredientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Foods_CategoryCode",
+                name: "IX_Foods_CategoryId",
                 table: "Foods",
-                column: "CategoryCode");
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Images_FoodCode",
+                name: "IX_Images_FoodId",
                 table: "Images",
-                column: "FoodCode");
+                column: "FoodId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ingredients_FoodCode",
-                table: "Ingredients",
-                column: "FoodCode");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_AddressCode",
+                name: "IX_Orders_AddressId",
                 table: "Orders",
-                column: "AddressCode");
+                column: "AddressId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Suborders_FoodCode",
-                table: "Suborders",
-                column: "FoodCode");
+                name: "IX_Orders_DeliveryStatusId",
+                table: "Orders",
+                column: "DeliveryStatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Suborders_OrderCode",
+                name: "IX_Suborders_FoodId",
                 table: "Suborders",
-                column: "OrderCode");
+                column: "FoodId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Suborders_OrderId",
+                table: "Suborders",
+                column: "OrderId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -581,16 +595,19 @@ namespace fooddelivery.Migrations
                 name: "Ingredients");
 
             migrationBuilder.DropTable(
+                name: "Foods");
+
+            migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "Foods");
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Addresses");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "DeliveryStatus");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

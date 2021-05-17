@@ -24,7 +24,7 @@ namespace fooddelivery.Repository.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public virtual async Task RemoveAsync(T entity)
+        public virtual async Task DeleteAsync(T entity)
         {
             _context.Set<T>().Remove(entity);
             await _context.SaveChangesAsync();
@@ -59,9 +59,9 @@ namespace fooddelivery.Repository.Repositories
             return pagList;
         }
 
-        public virtual async Task<T> GetByKeyAsync(int code)
+        public virtual async Task<T> GetByKeyAsync(long id)
         {
-            return await _context.Set<T>().FindAsync(code);
+            return await _context.Set<T>().FindAsync(id);
         }
 
         public virtual async Task UpdateAsync(T entity)

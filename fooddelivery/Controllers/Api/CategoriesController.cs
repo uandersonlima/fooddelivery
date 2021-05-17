@@ -7,11 +7,11 @@ using fooddelivery.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace fooddelivery.Controllers
+namespace fooddelivery.Controllers.Api
 {
     [ApiController]
     [Route("api/[controller]")]
-    [AllowAnonymous]
+    //[Authorize]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -21,15 +21,15 @@ namespace fooddelivery.Controllers
             _categoryService = categoryService;
         }
 
-        [HttpGet("{code}")]
-        public async Task<IActionResult> Get(int code)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(long id)
         {
-            var result = await _categoryService.GetByKeyAsync(code);
+            var result = await _categoryService.GetByKeyAsync(id);
             return Ok(result);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] AppView appview)
+        public async Task<IActionResult> GetAll([FromRoute] AppView appview)
         {
             var results = await _categoryService.GetAllAsync(appview, x => x.Name.Contains(appview.Search));
             return Ok(results);
@@ -41,10 +41,10 @@ namespace fooddelivery.Controllers
             return Ok(category);
         }
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] int code)
+        public async Task<IActionResult> Delete([FromRoute] long id)
         {
-            await _categoryService.RemoveAsync(code);
-            return Ok($"codigo {code} removido");
+            await _categoryService.DeleteAsync(id);
+            return Ok($"codigo {id} removido");
         }
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] Category category)

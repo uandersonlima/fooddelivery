@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace fooddelivery.Controllers
+namespace fooddelivery.Controllers.Api
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+    public class NotificationsController : ControllerBase
     {
-
     }
 }

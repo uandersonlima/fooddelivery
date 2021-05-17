@@ -26,18 +26,18 @@ namespace fooddelivery.Service.Services
             return await _repository.GetAllAsync(appview, predicate);
         }
 
-        public async Task<T> GetByKeyAsync(int code)
+        public async Task<T> GetByKeyAsync(long id)
         {
-            return await _repository.GetByKeyAsync(code);
+            return await _repository.GetByKeyAsync(id);
         }
 
-        public async Task RemoveAsync(int code)
+        public async Task DeleteAsync(long id)
         {
-            await RemoveAsync(await GetByKeyAsync(code));
+            await DeleteAsync(await GetByKeyAsync(id));
         }
-        public async Task RemoveAsync(T entity)
+        public async Task DeleteAsync(T entity)
         {
-            await _repository.RemoveAsync(entity);
+            await _repository.DeleteAsync(entity);
         }
 
         public async Task UpdateAsync(T entity)

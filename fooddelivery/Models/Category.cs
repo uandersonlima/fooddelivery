@@ -6,7 +6,7 @@ namespace fooddelivery.Models
     public class Category
     {
         [Key]
-        public int Code { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
 
         public List<Food> Foods { get; set; }

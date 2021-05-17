@@ -7,20 +7,20 @@ namespace fooddelivery.Models
     public class Change
     {
         [Key]
-        public int Code { get; set; }
+        public long Id { get; set; }
         public string Type { get; set; }
         public int Count { get; set; }
 
 
         [ForeignKey("Suborder")]
-        public int SuborderCode { get; set; }
+        public long SuborderId { get; set; }
         public Suborder Suborder { get; set; }
 
 
-        public int FoodCode { get; set; }
-        public int IngredientCode { get; set; }
+        public long FoodId { get; set; }
+        public long IngredientId { get; set; }
         
-        [ForeignKey("FoodCode,IngredientCode")]
+        [ForeignKey("FoodId,IngredientId")]
         public Additional Additional { get; set; }
 
     }

@@ -4,7 +4,7 @@ using fooddelivery.Models.Helpers;
 using fooddelivery.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace fooddelivery.Controllers
+namespace fooddelivery.Controllers.Api
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -17,10 +17,10 @@ namespace fooddelivery.Controllers
             _addressService = addressService;
         }
 
-        [HttpGet("{code}")]
-        public async Task<IActionResult> Get(int code)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(long id)
         {
-            var result = await _addressService.GetByKeyAsync(code);
+            var result = await _addressService.GetByKeyAsync(id);
             return Ok(result);
         }
 
@@ -37,10 +37,10 @@ namespace fooddelivery.Controllers
             return Ok(address);
         }
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] int code)
+        public async Task<IActionResult> Delete([FromRoute] long id)
         {
-            await _addressService.RemoveAsync(code);
-            return Ok($"codigo {code} removido");
+            await _addressService.DeleteAsync(id);
+            return Ok($"codigo {id} removido");
         }
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] Address address)

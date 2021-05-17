@@ -7,12 +7,12 @@ namespace fooddelivery.Models.Contracts
     {
         
         [ForeignKey("Food"),Column(Order = 0)]
-        public int FoodCode { get; set; }
+        public long FoodId { get; set; }
         public Food Food { get; set; }
 
 
         [ForeignKey("Ingredient"), Column(Order = 1)]
-        public int IngredientCode { get; set; }
+        public long IngredientId { get; set; }
         public Ingredient Ingredient { get; set; }
 
     }

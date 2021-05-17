@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using fooddelivery.Models.Contracts;
 
 namespace fooddelivery.Models
 {
     public class Food
     {
         [Key]
-        public int Code { get; set; }
+        public long Id { get; set; }
 
         [Required]
         public string Name { get; set; }
@@ -15,13 +16,16 @@ namespace fooddelivery.Models
         [Required]
         [Column(TypeName = "decimal(10, 2)")]
         public decimal Price { get; set; }
+        
+        [NotMapped]
+        public bool Available { get; set; }
 
-
-        public int CategoryCode { get; set; }
-        public Category Category { get; set; }    
+        public long CategoryId { get; set; }
+        public Category Category { get; set; }   
+         
 
         public List<Suborder> Suborders { get; set; }
         public List<Image> Images { get; set; }
-	    public List<Ingredient> Ingredients{ get; set; }
+	    public List<FoodIngredients> FoodIngredients{ get; set; }
     }
 }

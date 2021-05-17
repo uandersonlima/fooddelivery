@@ -13,6 +13,7 @@ namespace fooddelivery.Database
         public DbSet<Category> Categories { get; set; }
         public DbSet<Change> Changes { get; set; }
         public DbSet<Contact> Contacts { get; set; }
+        public DbSet<DeliveryStatus> DeliveryStatus { get; set; }
         public DbSet<Food> Foods { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
@@ -29,11 +30,11 @@ namespace fooddelivery.Database
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Additional>().HasKey(pk =>
-                    new { pk.FoodCode, pk.IngredientCode });
+                    new { pk.FoodId, pk.IngredientId });
             modelBuilder.Entity<Feedbacks>().HasKey(pk =>
-                    new { pk.UserId, pk.OrderCode });
+                    new { pk.UserId, pk.OrderId });
             modelBuilder.Entity<FoodIngredients>().HasKey(pk =>
-                    new { pk.FoodCode, pk.IngredientCode });
+                    new {  pk.FoodId, pk.IngredientId });
         }
     }
 }

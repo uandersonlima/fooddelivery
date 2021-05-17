@@ -6,7 +6,7 @@ namespace fooddelivery.Models
     public class Contact
     {
         [Key]
-        public int Code { get; set; }
+        public long Id { get; set; }
         public string Tel { get; set; }
         public string Email { get; set; }
         public string Whatsapp { get; set; }

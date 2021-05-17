@@ -1,4 +1,6 @@
+using System.Threading.Tasks;
 using fooddelivery.Models;
+using fooddelivery.Models.Helpers;
 using fooddelivery.Repository.Interfaces;
 using fooddelivery.Service.Interfaces;
 
@@ -11,6 +13,11 @@ namespace fooddelivery.Service.Services
         public FoodService(IFoodRepository repository) : base(repository)
         {
             _repository = repository;
+        }
+
+        public async Task<PaginationList<Food>> GetByCategoryIdAsync(long categoryId, AppView appview)
+        {
+            return await _repository.GetByCategoryIdAsync(categoryId, appview);
         }
     }
 }

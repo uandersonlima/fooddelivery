@@ -6,12 +6,12 @@ namespace fooddelivery.Models
     public class Image
     {
         [Key]
-        public int Code { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public byte[] Data { get; set; }
 
         [ForeignKey("Food")]
-        public int FoodCode { get; set; }
+        public long FoodId { get; set; }
         public Food Food { get; set; }
     }
 }

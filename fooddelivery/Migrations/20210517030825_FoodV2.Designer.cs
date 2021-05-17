@@ -9,8 +9,8 @@ using fooddelivery.Database;
 namespace fooddelivery.Migrations
 {
     [DbContext(typeof(FoodDeliveryContext))]
-    [Migration("20210422165751_FoodV1")]
-    partial class FoodV1
+    [Migration("20210517030825_FoodV2")]
+    partial class FoodV2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -153,9 +153,9 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("fooddelivery.Models.Address", b =>
                 {
-                    b.Property<int>("Code")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Addon")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -179,7 +179,7 @@ namespace fooddelivery.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
-                    b.HasKey("Code");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
@@ -188,53 +188,53 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("fooddelivery.Models.Category", b =>
                 {
-                    b.Property<int>("Code")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.HasKey("Code");
+                    b.HasKey("Id");
 
                     b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("fooddelivery.Models.Change", b =>
                 {
-                    b.Property<int>("Code")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.Property<int>("FoodCode")
-                        .HasColumnType("int");
+                    b.Property<long>("FoodId")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IngredientCode")
-                        .HasColumnType("int");
+                    b.Property<long>("IngredientId")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("SuborderCode")
-                        .HasColumnType("int");
+                    b.Property<long>("SuborderId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Type")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.HasKey("Code");
+                    b.HasKey("Id");
 
-                    b.HasIndex("SuborderCode");
+                    b.HasIndex("SuborderId");
 
-                    b.HasIndex("FoodCode", "IngredientCode");
+                    b.HasIndex("FoodId", "IngredientId");
 
                     b.ToTable("Changes");
                 });
 
             modelBuilder.Entity("fooddelivery.Models.Contact", b =>
                 {
-                    b.Property<int>("Code")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Email")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -258,7 +258,7 @@ namespace fooddelivery.Migrations
                     b.Property<string>("Whatsapp")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.HasKey("Code");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
@@ -267,15 +267,15 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("fooddelivery.Models.Contracts.Additional", b =>
                 {
-                    b.Property<int>("FoodCode")
-                        .HasColumnType("int");
+                    b.Property<long>("FoodId")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IngredientCode")
-                        .HasColumnType("int");
+                    b.Property<long>("IngredientId")
+                        .HasColumnType("bigint");
 
-                    b.HasKey("FoodCode", "IngredientCode");
+                    b.HasKey("FoodId", "IngredientId");
 
-                    b.HasIndex("IngredientCode");
+                    b.HasIndex("IngredientId");
 
                     b.ToTable("Additional");
                 });
@@ -285,8 +285,8 @@ namespace fooddelivery.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
-                    b.Property<int>("OrderCode")
-                        .HasColumnType("int");
+                    b.Property<long>("OrderId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Note")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -294,36 +294,50 @@ namespace fooddelivery.Migrations
                     b.Property<int>("Score")
                         .HasColumnType("int");
 
-                    b.HasKey("UserId", "OrderCode");
+                    b.HasKey("UserId", "OrderId");
 
-                    b.HasIndex("OrderCode");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Feedbacks");
                 });
 
             modelBuilder.Entity("fooddelivery.Models.Contracts.FoodIngredients", b =>
                 {
-                    b.Property<int>("FoodCode")
-                        .HasColumnType("int");
+                    b.Property<long>("FoodId")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IngredientCode")
-                        .HasColumnType("int");
+                    b.Property<long>("IngredientId")
+                        .HasColumnType("bigint");
 
-                    b.HasKey("FoodCode", "IngredientCode");
+                    b.HasKey("FoodId", "IngredientId");
 
-                    b.HasIndex("IngredientCode");
+                    b.HasIndex("IngredientId");
 
                     b.ToTable("FoodIngredients");
                 });
 
+            modelBuilder.Entity("fooddelivery.Models.DeliveryStatus", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DeliveryStatus");
+                });
+
             modelBuilder.Entity("fooddelivery.Models.Food", b =>
                 {
-                    b.Property<int>("Code")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("CategoryCode")
-                        .HasColumnType("int");
+                    b.Property<long>("CategoryId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -332,43 +346,40 @@ namespace fooddelivery.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10,2)");
 
-                    b.HasKey("Code");
+                    b.HasKey("Id");
 
-                    b.HasIndex("CategoryCode");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Foods");
                 });
 
             modelBuilder.Entity("fooddelivery.Models.Image", b =>
                 {
-                    b.Property<int>("Code")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<byte[]>("Data")
                         .HasColumnType("longblob");
 
-                    b.Property<int>("FoodCode")
-                        .HasColumnType("int");
+                    b.Property<long>("FoodId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.HasKey("Code");
+                    b.HasKey("Id");
 
-                    b.HasIndex("FoodCode");
+                    b.HasIndex("FoodId");
 
                     b.ToTable("Images");
                 });
 
             modelBuilder.Entity("fooddelivery.Models.Ingredient", b =>
                 {
-                    b.Property<int>("Code")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("FoodCode")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -379,24 +390,22 @@ namespace fooddelivery.Migrations
                     b.Property<string>("Unity")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.HasKey("Code");
-
-                    b.HasIndex("FoodCode");
+                    b.HasKey("Id");
 
                     b.ToTable("Ingredients");
                 });
 
             modelBuilder.Entity("fooddelivery.Models.Order", b =>
                 {
-                    b.Property<int>("Code")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("AddressCode")
-                        .HasColumnType("int");
+                    b.Property<long>("AddressId")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("DeliveryStatus")
-                        .HasColumnType("int");
+                    b.Property<long>("DeliveryStatusId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Note")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -404,36 +413,38 @@ namespace fooddelivery.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10,2)");
 
-                    b.HasKey("Code");
+                    b.HasKey("Id");
 
-                    b.HasIndex("AddressCode");
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("DeliveryStatusId");
 
                     b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("fooddelivery.Models.Suborder", b =>
                 {
-                    b.Property<int>("Code")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("FoodCode")
-                        .HasColumnType("int");
+                    b.Property<long>("FoodId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Note")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("OrderCode")
-                        .HasColumnType("int");
+                    b.Property<long>("OrderId")
+                        .HasColumnType("bigint");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10,2)");
 
-                    b.HasKey("Code");
+                    b.HasKey("Id");
 
-                    b.HasIndex("FoodCode");
+                    b.HasIndex("FoodId");
 
-                    b.HasIndex("OrderCode");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Suborders");
                 });
@@ -445,6 +456,9 @@ namespace fooddelivery.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("CPF")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -462,6 +476,9 @@ namespace fooddelivery.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -568,13 +585,13 @@ namespace fooddelivery.Migrations
                 {
                     b.HasOne("fooddelivery.Models.Suborder", "Suborder")
                         .WithMany("Changes")
-                        .HasForeignKey("SuborderCode")
+                        .HasForeignKey("SuborderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("fooddelivery.Models.Contracts.Additional", "Additional")
                         .WithMany("Changes")
-                        .HasForeignKey("FoodCode", "IngredientCode")
+                        .HasForeignKey("FoodId", "IngredientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -598,13 +615,13 @@ namespace fooddelivery.Migrations
                 {
                     b.HasOne("fooddelivery.Models.Food", "Food")
                         .WithMany()
-                        .HasForeignKey("FoodCode")
+                        .HasForeignKey("FoodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("fooddelivery.Models.Ingredient", "Ingredient")
                         .WithMany()
-                        .HasForeignKey("IngredientCode")
+                        .HasForeignKey("IngredientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -617,7 +634,7 @@ namespace fooddelivery.Migrations
                 {
                     b.HasOne("fooddelivery.Models.Order", "Order")
                         .WithMany("Feedbacks")
-                        .HasForeignKey("OrderCode")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -635,14 +652,14 @@ namespace fooddelivery.Migrations
             modelBuilder.Entity("fooddelivery.Models.Contracts.FoodIngredients", b =>
                 {
                     b.HasOne("fooddelivery.Models.Food", "Food")
-                        .WithMany()
-                        .HasForeignKey("FoodCode")
+                        .WithMany("FoodIngredients")
+                        .HasForeignKey("FoodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("fooddelivery.Models.Ingredient", "Ingredient")
-                        .WithMany()
-                        .HasForeignKey("IngredientCode")
+                        .WithMany("FoodIngredients")
+                        .HasForeignKey("IngredientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -655,7 +672,7 @@ namespace fooddelivery.Migrations
                 {
                     b.HasOne("fooddelivery.Models.Category", "Category")
                         .WithMany("Foods")
-                        .HasForeignKey("CategoryCode")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -666,18 +683,9 @@ namespace fooddelivery.Migrations
                 {
                     b.HasOne("fooddelivery.Models.Food", "Food")
                         .WithMany("Images")
-                        .HasForeignKey("FoodCode")
+                        .HasForeignKey("FoodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Food");
-                });
-
-            modelBuilder.Entity("fooddelivery.Models.Ingredient", b =>
-                {
-                    b.HasOne("fooddelivery.Models.Food", "Food")
-                        .WithMany("Ingredients")
-                        .HasForeignKey("FoodCode");
 
                     b.Navigation("Food");
                 });
@@ -686,24 +694,32 @@ namespace fooddelivery.Migrations
                 {
                     b.HasOne("fooddelivery.Models.Address", "Address")
                         .WithMany()
-                        .HasForeignKey("AddressCode")
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("fooddelivery.Models.DeliveryStatus", "DeliveryStatus")
+                        .WithMany("Orders")
+                        .HasForeignKey("DeliveryStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Address");
+
+                    b.Navigation("DeliveryStatus");
                 });
 
             modelBuilder.Entity("fooddelivery.Models.Suborder", b =>
                 {
                     b.HasOne("fooddelivery.Models.Food", "Food")
                         .WithMany("Suborders")
-                        .HasForeignKey("FoodCode")
+                        .HasForeignKey("FoodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("fooddelivery.Models.Order", "Order")
                         .WithMany("Suborders")
-                        .HasForeignKey("OrderCode")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -722,13 +738,23 @@ namespace fooddelivery.Migrations
                     b.Navigation("Changes");
                 });
 
+            modelBuilder.Entity("fooddelivery.Models.DeliveryStatus", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
             modelBuilder.Entity("fooddelivery.Models.Food", b =>
                 {
+                    b.Navigation("FoodIngredients");
+
                     b.Navigation("Images");
 
-                    b.Navigation("Ingredients");
-
                     b.Navigation("Suborders");
+                });
+
+            modelBuilder.Entity("fooddelivery.Models.Ingredient", b =>
+                {
+                    b.Navigation("FoodIngredients");
                 });
 
             modelBuilder.Entity("fooddelivery.Models.Order", b =>

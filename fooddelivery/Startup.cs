@@ -1,3 +1,4 @@
+using fooddelivery.Database;
 using fooddelivery.Service.Extensions;
 using fooddelivery.Service.Services;
 using Microsoft.AspNetCore.Builder;
@@ -24,13 +25,14 @@ namespace fooddelivery
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataSeed dataSeed)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "fooddelivery v1"));
+                dataSeed.StartAsync().ConfigureAwait(true);
             }
             app.UseDeveloperExceptionPage();
             app.UseSwagger();
@@ -39,8 +41,9 @@ namespace fooddelivery
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "fooddelivery v1");
                 c.RoutePrefix = "";
             });
+            dataSeed.StartAsync().ConfigureAwait(true);
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 

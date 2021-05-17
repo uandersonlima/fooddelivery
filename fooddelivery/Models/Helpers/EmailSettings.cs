@@ -1,6 +1,6 @@
 namespace fooddelivery.Models.Helpers
 {
-    public class AppSettings
+    public class EmailSettings
     {
         public const string Position = "Email";
 

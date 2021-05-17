@@ -6,7 +6,7 @@ namespace fooddelivery.Models
     public class Address
     {
         [Key]
-        public int Code { get; set; }
+        public long Id { get; set; }
         public string Number { get; set; }
         public string City { get; set; }
         public string Neighborhood { get; set; }

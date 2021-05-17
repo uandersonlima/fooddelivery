@@ -7,7 +7,7 @@ namespace fooddelivery.Models
     public class Suborder
     {
         [Key]
-        public int Code { get; set; }
+        public long Id { get; set; }
 
         [Required]
         [Column(TypeName = "decimal(10, 2)")]
@@ -17,14 +17,13 @@ namespace fooddelivery.Models
 
 
         [ForeignKey("Food")]
-        public int FoodCode { get; set; }
+        public long FoodId { get; set; }
         public Food Food { get; set; }
 
         [ForeignKey("Order")]
-        public int OrderCode { get; set; }
+        public long OrderId { get; set; }
         public Order Order { get; set; }
 
         public List<Change> Changes { get; set; }
-
     }
 }
