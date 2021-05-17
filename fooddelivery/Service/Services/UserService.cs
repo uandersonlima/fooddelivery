@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using fooddelivery.Models;
 using fooddelivery.Models.Helpers;
@@ -17,12 +18,12 @@ namespace fooddelivery.Service.Services
             _userRepository = userRepository;
         }
 
-        public async Task<List<string>> AddAsync(User user, string password)
+        public async Task<StringBuilder> AddAsync(User user, string password)
         {
             return await _userRepository.AddAsync(user, password);
         }
 
-        public async Task<List<string>> ChangePasswordAsync(User user, string currentPassword, string newPassword)
+        public async Task<StringBuilder> ChangePasswordAsync(User user, string currentPassword, string newPassword)
         {
             return await _userRepository.ChangePasswordAsync(user, currentPassword, newPassword);
         }
@@ -32,12 +33,12 @@ namespace fooddelivery.Service.Services
             return await _userRepository.CheckPasswordAsync(user, password);
         }
 
-        public async Task<List<string>> DeleteAsync(string id)
+        public async Task<StringBuilder> DeleteAsync(string id)
         {
             return await DeleteAsync(await GetUserByIdAsync(id));
         }
 
-        public async Task<List<string>> DeleteAsync(User user)
+        public async Task<StringBuilder> DeleteAsync(User user)
         {
             return await _userRepository.DeleteAsync(user);
         }
@@ -62,12 +63,12 @@ namespace fooddelivery.Service.Services
             return await _userRepository.GetUserByIdAsync(id);
         }
 
-        public async Task<List<string>> ResetPasswordAsync(User user, string token, string newPassword)
+        public async Task<StringBuilder> ResetPasswordAsync(User user, string token, string newPassword)
         {
             return await _userRepository.ResetPasswordAsync(user, token, newPassword);
         }
 
-        public async Task<List<string>> UpdateAsync(User user)
+        public async Task<StringBuilder> UpdateAsync(User user)
         {
             return await _userRepository.UpdateAsync(user);
         }

@@ -6,7 +6,7 @@ namespace fooddelivery.Repository.Interfaces
 {
     public interface IDeliveryStatusRepository : IBaseRepository<DeliveryStatus>
     {
-        Task<bool> HasValue();
-        Task StartAsync(List<DeliveryStatus> listStatus);
+        bool HasValue();
+        void Initialize(List<DeliveryStatus> listStatus);
     }
 }

@@ -25,14 +25,14 @@ namespace fooddelivery
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataSeed dataSeed)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SeedData dataSeed)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "fooddelivery v1"));
-                dataSeed.StartAsync().ConfigureAwait(true);
+                dataSeed.Initialize();
             }
             app.UseDeveloperExceptionPage();
             app.UseSwagger();
@@ -41,7 +41,7 @@ namespace fooddelivery
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "fooddelivery v1");
                 c.RoutePrefix = "";
             });
-            dataSeed.StartAsync().ConfigureAwait(true);
+            dataSeed.Initialize();
 
             app.UseHttpsRedirection();
 

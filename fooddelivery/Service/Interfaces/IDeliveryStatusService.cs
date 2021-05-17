@@ -6,7 +6,7 @@ namespace fooddelivery.Service.Interfaces
 {
     public interface IDeliveryStatusService:IBaseService<DeliveryStatus>
     {
-         Task<bool> HasValue();
-         Task StartAsync(List<DeliveryStatus> listStatus);
+         bool HasValue();
+         void Initialize(List<DeliveryStatus> listStatus);
     }
 }

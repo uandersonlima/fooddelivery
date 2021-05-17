@@ -15,14 +15,14 @@ namespace fooddelivery.Service.Services
             _repository = repository;
         }
 
-        public async Task<bool> HasValue()
+        public bool HasValue()
         {
-            return await _repository.HasValue();
+            return _repository.HasValue();
         }
 
-        public async Task StartAsync(List<DeliveryStatus> listStatus)
+        public void Initialize(List<DeliveryStatus> listStatus)
         {
-            await _repository.StartAsync(listStatus);
+            _repository.Initialize(listStatus);
         }
     }
 }

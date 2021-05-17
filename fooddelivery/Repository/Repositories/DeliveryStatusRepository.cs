@@ -18,14 +18,14 @@ namespace fooddelivery.Repository.Repositories
             _context = context;
         }
 
-        public async Task<bool> HasValue()
+        public bool HasValue()
         {
             return _context.DeliveryStatus.Any();
         }
 
-        public async Task StartAsync(List<DeliveryStatus> listStatus)
+        public void Initialize(List<DeliveryStatus> listStatus)
         {
-            await _context.DeliveryStatus.AddRangeAsync(listStatus);
+            _context.DeliveryStatus.AddRange(listStatus);
             _context.SaveChanges();
         }
     }

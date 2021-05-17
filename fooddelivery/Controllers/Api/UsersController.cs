@@ -5,7 +5,7 @@ using AutoMapper;
 using fooddelivery.Models;
 using fooddelivery.Models.DTO;
 using fooddelivery.Models.Helpers;
-using Microsoft.AspNetCore.Identity;
+using fooddelivery.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,12 +16,12 @@ namespace fooddelivery.Controllers.Api
     public class UsersController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly UserManager<User> _userManager;
+        private readonly IUserService _userService;
 
-        public UsersController(IMapper mapper, UserManager<User> userManager)
+        public UsersController(IMapper mapper, IUserService userService)
         {
             _mapper = mapper;
-            _userManager = userManager;
+            _userService = userService;
         }
 
         [HttpGet("{id}")]
@@ -29,19 +29,19 @@ namespace fooddelivery.Controllers.Api
         {
             if (string.IsNullOrEmpty(id))
                 return NoContent();
-            var user = await _userManager.FindByIdAsync(id);
-            return Ok(user);
+            var user = await _userService.GetUserByIdAsync(id);
+
+            if (user != null)
+                return Ok(user);
+            else
+                return NotFound("user not found");
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery]AppView appview)
+        public async Task<IActionResult> GetAll([FromQuery] AppView appview)
         {
-            var userList =  _userManager.Users.AsNoTracking();
-            if(appview.CheckSearch())
-            {
-               userList = userList.Where(u => u.UserName.Contains(appview.Search));
-            }
-            return Ok(await userList.ToListAsync());
+            var userList = await _userService.GetAllAsync(appview);
+            return Ok(userList);
         }
 
         [HttpPost]
@@ -49,40 +49,24 @@ namespace fooddelivery.Controllers.Api
         {
             var user = _mapper.Map<RegisterUserDTO, User>(userDTO);
 
-            var result = await _userManager.CreateAsync(user, userDTO.Password);
-            if (result.Succeeded)
-            {
-                return Ok(user);
-            }
+            var errors = await _userService.AddAsync(user, userDTO.Password);
+
+            if (errors.Length != 0)
+                return UnprocessableEntity(errors.ToString());
             else
-            {
-                var str = new StringBuilder();
-                foreach (var erro in result.Errors)
-                {
-                    str.Append(erro.Code + ":\n" + erro.Description);
-                }
-                return UnprocessableEntity(str.ToString());
-            }
+                return Ok(user);
         }
 
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] User user)
         {
 
-            var result = await _userManager.UpdateAsync(user);
-            if (result.Succeeded)
-            {
-                return Ok(user);
-            }
+            var errors = await _userService.UpdateAsync(user);
+
+            if (errors.Length != 0)
+                return UnprocessableEntity(errors.ToString());
             else
-            {
-                var str = new StringBuilder();
-                foreach (var erro in result.Errors)
-                {
-                    str.Append(erro.Code + ":\n" + erro.Description);
-                }
-                return UnprocessableEntity(str.ToString());
-            }
+                return Ok(user);
         }
 
         [HttpDelete("{id}")]
@@ -90,24 +74,24 @@ namespace fooddelivery.Controllers.Api
         {
             if (string.IsNullOrEmpty(id))
                 return NoContent();
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
-                NotFound("Usuário não existe");
 
-            var result = await _userManager.DeleteAsync(user);
-            if (result.Succeeded)
+            var user = await _userService.GetUserByIdAsync(id);
+
+            if (user != null)
             {
-                return Ok(user + "Usuário deletado");
+
+                var errors = await _userService.DeleteAsync(id);
+
+                if (errors.Length != 0)
+                    return UnprocessableEntity(errors.ToString());
+                else
+                    return Ok($"user id: {id} deleted");
             }
             else
             {
-                var str = new StringBuilder();
-                foreach (var erro in result.Errors)
-                {
-                    str.Append(erro.Code + ":\n" + erro.Description);
-                }
-                return UnprocessableEntity(str.ToString());
+                return NotFound("user not found");
             }
+
         }
     }
 }

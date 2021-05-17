@@ -226,7 +226,7 @@ namespace fooddelivery.Service.Extensions
                                         .AddDefaultTokenProviders();
 
             
-            svc.AddScoped<DataSeed>();
+            svc.AddScoped<SeedData>();
 
             //Services
             svc.AddScoped<IAuthService, AuthService>();

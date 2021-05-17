@@ -5,20 +5,20 @@ using fooddelivery.Service.Interfaces;
 
 namespace fooddelivery.Database
 {
-    public class DataSeed
+    public class SeedData
     {
         private readonly IDeliveryStatusService _status;
 
-        public DataSeed(IDeliveryStatusService status)
+        public SeedData(IDeliveryStatusService status)
         {
             _status = status;
         }
 
-        public async Task StartAsync()
+        public void Initialize()
         {
-            if (!await _status.HasValue())
+            if (!_status.HasValue())
             {
-                await _status.StartAsync(new List<DeliveryStatus>{
+                 _status.Initialize(new List<DeliveryStatus>{
                     new DeliveryStatus {Id = 1, Name = "Aberto"},
                     new DeliveryStatus {Id = 2, Name = "Em progresso"},
                     new DeliveryStatus {Id = 3, Name = "Pronto"},

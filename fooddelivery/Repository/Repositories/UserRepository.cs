@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using fooddelivery.Models;
 using fooddelivery.Models.Helpers;
@@ -16,30 +17,30 @@ namespace fooddelivery.Repository.Repositories
         {
             _userManager = userManager;
         }
-        private List<string> GetErrors(IdentityResult response)
+        private StringBuilder GetErrors(IdentityResult response)
         {
             if (response.Succeeded)
             {
-                return new List<string>();
+                return new StringBuilder();
             }
             else
             {
-                var listErrors = new List<string>();
+                var errors = new StringBuilder();
                 foreach (var error in response.Errors)
                 {
-                    listErrors.Add(error.Code + ":\n" + error.Description);
+                    errors.Append(error.Code + ":\n" + error.Description);
                 }
-                return listErrors;
+                return errors;
             }
         }
 
-        public async Task<List<string>> AddAsync(User user, string password)
+        public async Task<StringBuilder> AddAsync(User user, string password)
         {
             var response = await _userManager.CreateAsync(user, password);
             return GetErrors(response);
         }
 
-        public async Task<List<string>> ChangePasswordAsync(User user, string currentPassword, string newPassword)
+        public async Task<StringBuilder> ChangePasswordAsync(User user, string currentPassword, string newPassword)
         {
             var response = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
             return GetErrors(response);
@@ -48,9 +49,9 @@ namespace fooddelivery.Repository.Repositories
         {
             return await _userManager.CheckPasswordAsync(user, password);
         }
-        public async Task<List<string>> DeleteAsync(User user)
+        public async Task<StringBuilder> DeleteAsync(User user)
         {
-            var response = await _userManager.UpdateAsync(user);
+            var response = await _userManager.DeleteAsync(user);
             return GetErrors(response);
         }
 
@@ -79,13 +80,13 @@ namespace fooddelivery.Repository.Repositories
             return await _userManager.FindByEmailAsync(email);
         }
 
-        public async Task<List<string>> ResetPasswordAsync(User user, string token, string newPassword)
+        public async Task<StringBuilder> ResetPasswordAsync(User user, string token, string newPassword)
         {
             var response = await _userManager.ResetPasswordAsync(user, token, newPassword);
             return GetErrors(response);
         }
 
-        public async Task<List<string>> UpdateAsync(User user)
+        public async Task<StringBuilder> UpdateAsync(User user)
         {
             var response = await _userManager.UpdateAsync(user);
             return GetErrors(response);
