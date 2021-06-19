@@ -15,7 +15,7 @@ namespace fooddelivery.Service.Services
             _repository = repository;
         }
 
-        public async Task<PaginationList<Food>> GetByCategoryIdAsync(long categoryId, AppView appview)
+        public async Task<PaginationList<Food>> GetByCategoryIdAsync(ulong categoryId, AppView appview)
         {
             return await _repository.GetByCategoryIdAsync(categoryId, appview);
         }

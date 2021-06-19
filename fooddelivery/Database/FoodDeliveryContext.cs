@@ -2,14 +2,21 @@ using fooddelivery.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using fooddelivery.Models.Contracts;
+using fooddelivery.Models.Access;
+using Microsoft.AspNetCore.Identity;
 
 namespace fooddelivery.Database
 {
-    public class FoodDeliveryContext : IdentityDbContext<User>
+    public class FoodDeliveryContext : IdentityDbContext<User, IdentityRole<ulong>, ulong, IdentityUserClaim<ulong>, IdentityUserRole<ulong>, IdentityUserLogin<ulong>,
+        IdentityRoleClaim<ulong>, IdentityUserToken<ulong>>
     {
         public FoodDeliveryContext(DbContextOptions<FoodDeliveryContext> options) : base(options) { }
 
+
+
+        public DbSet<AccessKey> AccessKeys { get; set; }
         public DbSet<Address> Addresses { get; set; }
+        public DbSet<AddressType> AddressTypes { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Change> Changes { get; set; }
         public DbSet<Contact> Contacts { get; set; }
@@ -28,13 +35,14 @@ namespace fooddelivery.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            modelBuilder.Entity<AccessKey>().HasKey(pk =>
+                    new { pk.Key, pk.Email, pk.KeyType });
             modelBuilder.Entity<Additional>().HasKey(pk =>
                     new { pk.FoodId, pk.IngredientId });
             modelBuilder.Entity<Feedbacks>().HasKey(pk =>
                     new { pk.UserId, pk.OrderId });
             modelBuilder.Entity<FoodIngredients>().HasKey(pk =>
-                    new {  pk.FoodId, pk.IngredientId });
+                    new { pk.FoodId, pk.IngredientId });
         }
     }
 }

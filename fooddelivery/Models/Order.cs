@@ -8,7 +8,7 @@ namespace fooddelivery.Models
     public class Order
     {
         [Key]
-        public long Id { get; set; }
+        public ulong Id { get; set; }
 
         [Required]
         [Column(TypeName = "decimal(10, 2)")]
@@ -18,14 +18,20 @@ namespace fooddelivery.Models
 
 
         [ForeignKey("DeliveryStatus")]
-        public long DeliveryStatusId { get; set; }
+        public ulong DeliveryStatusId { get; set; }
         public DeliveryStatus DeliveryStatus { get; set; }
 
 
 
         [ForeignKey("Address")]
-        public long AddressId { get; set; }
+        public ulong AddressId { get; set; }
         public Address Address { get; set; }
+
+
+        [Required, ForeignKey("User")]
+        public ulong UserId { get; set; }
+        public virtual User User { get; set; }
+
 
         public List<Suborder> Suborders { get; set; }
         public List<Feedbacks> Feedbacks { get; set; }

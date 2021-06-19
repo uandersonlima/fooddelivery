@@ -18,33 +18,63 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(long id)
+        public async Task<IActionResult> Get(ulong id)
         {
             var result = await _orderService.GetByKeyAsync(id);
             return Ok(result);
         }
 
+        [HttpGet("AllByUserId/{userId}")]
+        public async Task<IActionResult> GetAll(ulong userId, [FromQuery] AppView appview)
+        {
+            var results = await _orderService.GetAllByUserIdAsync(userId, appview);
+            return Ok(results);
+        }
+
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromRoute] AppView appview)
+        public async Task<IActionResult> GetAll([FromQuery] AppView appview)
         {
             var results = await _orderService.GetAllAsync(appview, null);
             return Ok(results);
         }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Order order)
         {
+            if (order == null)
+                return BadRequest();
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
             await _orderService.AddAsync(order);
             return Ok(order);
         }
+        
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromRoute] long id)
+        public async Task<IActionResult> Delete([FromQuery] ulong id)
         {
+            var obj = _orderService.GetByKeyAsync(id);
+            if (obj == null)
+                return NotFound("recurso não encontrado");
+
+
             await _orderService.DeleteAsync(id);
             return Ok($"codigo {id} removido");
         }
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] Order order)
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(ulong id, [FromBody] Order order)
         {
+            var obj = _orderService.GetByKeyAsync(id);
+
+            if (obj == null)
+                return NotFound();
+
+            if (order == null)
+                return BadRequest();
+
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
             await _orderService.UpdateAsync(order);
             return Ok(order);
         }

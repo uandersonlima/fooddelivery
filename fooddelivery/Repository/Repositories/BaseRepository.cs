@@ -59,7 +59,7 @@ namespace fooddelivery.Repository.Repositories
             return pagList;
         }
 
-        public virtual async Task<T> GetByKeyAsync(long id)
+        public virtual async Task<T> GetByKeyAsync(ulong id)
         {
             return await _context.Set<T>().FindAsync(id);
         }

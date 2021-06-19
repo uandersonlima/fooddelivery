@@ -9,8 +9,8 @@ using fooddelivery.Database;
 namespace fooddelivery.Migrations
 {
     [DbContext(typeof(FoodDeliveryContext))]
-    [Migration("20210517030825_FoodV2")]
-    partial class FoodV2
+    [Migration("20210619161546_fooddeliveryV2")]
+    partial class fooddeliveryV2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,10 +19,11 @@ namespace fooddelivery.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.5");
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<ulong>", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                    b.Property<ulong>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -45,7 +46,7 @@ namespace fooddelivery.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<ulong>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,9 +58,8 @@ namespace fooddelivery.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                    b.Property<ulong>("RoleId")
+                        .HasColumnType("bigint unsigned");
 
                     b.HasKey("Id");
 
@@ -68,7 +68,7 @@ namespace fooddelivery.Migrations
                     b.ToTable("AspNetRoleClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<ulong>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -80,9 +80,8 @@ namespace fooddelivery.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned");
 
                     b.HasKey("Id");
 
@@ -91,22 +90,19 @@ namespace fooddelivery.Migrations
                     b.ToTable("AspNetUserClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<ulong>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -115,13 +111,13 @@ namespace fooddelivery.Migrations
                     b.ToTable("AspNetUserLogins");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<ulong>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                    b.Property<ulong>("RoleId")
+                        .HasColumnType("bigint unsigned");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -130,18 +126,16 @@ namespace fooddelivery.Migrations
                     b.ToTable("AspNetUserRoles");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<ulong>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<string>("Value")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -151,14 +145,39 @@ namespace fooddelivery.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("fooddelivery.Models.Access.AccessKey", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("KeyType")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<DateTime>("DataGerada")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Key", "Email", "KeyType");
+
+                    b.ToTable("AccessKeys");
+                });
+
             modelBuilder.Entity("fooddelivery.Models.Address", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<ulong>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<string>("Addon")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("AddressType")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<ulong?>("AddressTypeId")
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<string>("City")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -175,22 +194,43 @@ namespace fooddelivery.Migrations
                     b.Property<string>("State")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned");
+
+                    b.Property<double?>("X_coordinate")
+                        .HasColumnType("double");
+
+                    b.Property<double?>("Y_coordinate")
+                        .HasColumnType("double");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressTypeId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Addresses");
                 });
 
+            modelBuilder.Entity("fooddelivery.Models.AddressType", b =>
+                {
+                    b.Property<ulong>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint unsigned");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AddressTypes");
+                });
+
             modelBuilder.Entity("fooddelivery.Models.Category", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<ulong>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -202,21 +242,21 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("fooddelivery.Models.Change", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<ulong>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.Property<long>("FoodId")
-                        .HasColumnType("bigint");
+                    b.Property<ulong>("FoodId")
+                        .HasColumnType("bigint unsigned");
 
-                    b.Property<long>("IngredientId")
-                        .HasColumnType("bigint");
+                    b.Property<ulong>("IngredientId")
+                        .HasColumnType("bigint unsigned");
 
-                    b.Property<long>("SuborderId")
-                        .HasColumnType("bigint");
+                    b.Property<ulong>("SuborderId")
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<string>("Type")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -232,9 +272,9 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("fooddelivery.Models.Contact", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<ulong>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<string>("Email")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -251,9 +291,8 @@ namespace fooddelivery.Migrations
                     b.Property<string>("Twitter")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<string>("Whatsapp")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -267,11 +306,11 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("fooddelivery.Models.Contracts.Additional", b =>
                 {
-                    b.Property<long>("FoodId")
-                        .HasColumnType("bigint");
+                    b.Property<ulong>("FoodId")
+                        .HasColumnType("bigint unsigned");
 
-                    b.Property<long>("IngredientId")
-                        .HasColumnType("bigint");
+                    b.Property<ulong>("IngredientId")
+                        .HasColumnType("bigint unsigned");
 
                     b.HasKey("FoodId", "IngredientId");
 
@@ -282,11 +321,11 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("fooddelivery.Models.Contracts.Feedbacks", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned");
 
-                    b.Property<long>("OrderId")
-                        .HasColumnType("bigint");
+                    b.Property<ulong>("OrderId")
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<string>("Note")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -303,11 +342,11 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("fooddelivery.Models.Contracts.FoodIngredients", b =>
                 {
-                    b.Property<long>("FoodId")
-                        .HasColumnType("bigint");
+                    b.Property<ulong>("FoodId")
+                        .HasColumnType("bigint unsigned");
 
-                    b.Property<long>("IngredientId")
-                        .HasColumnType("bigint");
+                    b.Property<ulong>("IngredientId")
+                        .HasColumnType("bigint unsigned");
 
                     b.HasKey("FoodId", "IngredientId");
 
@@ -318,9 +357,9 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("fooddelivery.Models.DeliveryStatus", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<ulong>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -332,12 +371,12 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("fooddelivery.Models.Food", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<ulong>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint unsigned");
 
-                    b.Property<long>("CategoryId")
-                        .HasColumnType("bigint");
+                    b.Property<ulong>("CategoryId")
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -355,15 +394,15 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("fooddelivery.Models.Image", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<ulong>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<byte[]>("Data")
                         .HasColumnType("longblob");
 
-                    b.Property<long>("FoodId")
-                        .HasColumnType("bigint");
+                    b.Property<ulong>("FoodId")
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -377,9 +416,9 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("fooddelivery.Models.Ingredient", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<ulong>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -397,15 +436,15 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("fooddelivery.Models.Order", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<ulong>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint unsigned");
 
-                    b.Property<long>("AddressId")
-                        .HasColumnType("bigint");
+                    b.Property<ulong>("AddressId")
+                        .HasColumnType("bigint unsigned");
 
-                    b.Property<long>("DeliveryStatusId")
-                        .HasColumnType("bigint");
+                    b.Property<ulong>("DeliveryStatusId")
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<string>("Note")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -413,29 +452,34 @@ namespace fooddelivery.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10,2)");
 
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId");
 
                     b.HasIndex("DeliveryStatusId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("fooddelivery.Models.Suborder", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<ulong>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint unsigned");
 
-                    b.Property<long>("FoodId")
-                        .HasColumnType("bigint");
+                    b.Property<ulong>("FoodId")
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<string>("Note")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<long>("OrderId")
-                        .HasColumnType("bigint");
+                    b.Property<ulong>("OrderId")
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10,2)");
@@ -451,8 +495,9 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("fooddelivery.Models.User", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                    b.Property<ulong>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint unsigned");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -519,16 +564,16 @@ namespace fooddelivery.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<ulong>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<ulong>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<ulong>", b =>
                 {
                     b.HasOne("fooddelivery.Models.User", null)
                         .WithMany()
@@ -537,7 +582,7 @@ namespace fooddelivery.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<ulong>", b =>
                 {
                     b.HasOne("fooddelivery.Models.User", null)
                         .WithMany()
@@ -546,9 +591,9 @@ namespace fooddelivery.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<ulong>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<ulong>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -561,7 +606,7 @@ namespace fooddelivery.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<ulong>", b =>
                 {
                     b.HasOne("fooddelivery.Models.User", null)
                         .WithMany()
@@ -572,6 +617,10 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("fooddelivery.Models.Address", b =>
                 {
+                    b.HasOne("fooddelivery.Models.AddressType", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("AddressTypeId");
+
                     b.HasOne("fooddelivery.Models.User", "User")
                         .WithMany("Addresses")
                         .HasForeignKey("UserId")
@@ -704,9 +753,17 @@ namespace fooddelivery.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("fooddelivery.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Address");
 
                     b.Navigation("DeliveryStatus");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("fooddelivery.Models.Suborder", b =>
@@ -726,6 +783,11 @@ namespace fooddelivery.Migrations
                     b.Navigation("Food");
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("fooddelivery.Models.AddressType", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("fooddelivery.Models.Category", b =>

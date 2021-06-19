@@ -6,7 +6,7 @@ namespace fooddelivery.Models
     public class Contact
     {
         [Key]
-        public long Id { get; set; }
+        public ulong Id { get; set; }
         public string Tel { get; set; }
         public string Email { get; set; }
         public string Whatsapp { get; set; }
@@ -16,7 +16,7 @@ namespace fooddelivery.Models
 
 
         [Required, ForeignKey("User")]
-        public string UserId { get; set; }
+        public ulong UserId { get; set; }
         public virtual User User { get; set; }
     }
 }

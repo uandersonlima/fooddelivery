@@ -4,15 +4,43 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace fooddelivery.Migrations
 {
-    public partial class FoodV2 : Migration
+    public partial class fooddeliveryV2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "AccessKeys",
+                columns: table => new
+                {
+                    Key = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    Email = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    KeyType = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    DataGerada = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccessKeys", x => new { x.Key, x.Email, x.KeyType });
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AddressTypes",
+                columns: table => new
+                {
+                    Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AddressTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
@@ -26,7 +54,8 @@ namespace fooddelivery.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     CPF = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     UserName = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
@@ -53,7 +82,7 @@ namespace fooddelivery.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
@@ -66,7 +95,7 @@ namespace fooddelivery.Migrations
                 name: "DeliveryStatus",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
@@ -79,7 +108,7 @@ namespace fooddelivery.Migrations
                 name: "Ingredients",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
@@ -96,7 +125,7 @@ namespace fooddelivery.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    RoleId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    RoleId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
                     ClaimType = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     ClaimValue = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
@@ -115,7 +144,7 @@ namespace fooddelivery.Migrations
                 name: "Addresses",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Number = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     City = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
@@ -123,11 +152,21 @@ namespace fooddelivery.Migrations
                     State = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     Addon = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     Standard = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false)
+                    AddressType = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    X_coordinate = table.Column<double>(type: "double", nullable: true),
+                    Y_coordinate = table.Column<double>(type: "double", nullable: true),
+                    UserId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    AddressTypeId = table.Column<ulong>(type: "bigint unsigned", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Addresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Addresses_AddressTypes_AddressTypeId",
+                        column: x => x.AddressTypeId,
+                        principalTable: "AddressTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Addresses_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -142,7 +181,7 @@ namespace fooddelivery.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    UserId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
                     ClaimType = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     ClaimValue = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
@@ -161,10 +200,10 @@ namespace fooddelivery.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "varchar(128) CHARACTER SET utf8mb4", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "varchar(128) CHARACTER SET utf8mb4", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    ProviderKey = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false)
+                    UserId = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -181,8 +220,8 @@ namespace fooddelivery.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
-                    RoleId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false)
+                    UserId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    RoleId = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -205,9 +244,9 @@ namespace fooddelivery.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
-                    LoginProvider = table.Column<string>(type: "varchar(128) CHARACTER SET utf8mb4", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "varchar(128) CHARACTER SET utf8mb4", maxLength: 128, nullable: false),
+                    UserId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    LoginProvider = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    Name = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
                     Value = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
                 constraints: table =>
@@ -225,7 +264,7 @@ namespace fooddelivery.Migrations
                 name: "Contacts",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Tel = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     Email = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
@@ -233,7 +272,7 @@ namespace fooddelivery.Migrations
                     Facebook = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     Twitter = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     Instagram = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false)
+                    UserId = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -250,11 +289,11 @@ namespace fooddelivery.Migrations
                 name: "Foods",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    CategoryId = table.Column<long>(type: "bigint", nullable: false)
+                    CategoryId = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -271,12 +310,13 @@ namespace fooddelivery.Migrations
                 name: "Orders",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Note = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    DeliveryStatusId = table.Column<long>(type: "bigint", nullable: false),
-                    AddressId = table.Column<long>(type: "bigint", nullable: false)
+                    DeliveryStatusId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    AddressId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    UserId = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -285,6 +325,12 @@ namespace fooddelivery.Migrations
                         name: "FK_Orders_Addresses_AddressId",
                         column: x => x.AddressId,
                         principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -299,8 +345,8 @@ namespace fooddelivery.Migrations
                 name: "Additional",
                 columns: table => new
                 {
-                    FoodId = table.Column<long>(type: "bigint", nullable: false),
-                    IngredientId = table.Column<long>(type: "bigint", nullable: false)
+                    FoodId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    IngredientId = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -323,8 +369,8 @@ namespace fooddelivery.Migrations
                 name: "FoodIngredients",
                 columns: table => new
                 {
-                    FoodId = table.Column<long>(type: "bigint", nullable: false),
-                    IngredientId = table.Column<long>(type: "bigint", nullable: false)
+                    FoodId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    IngredientId = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -347,11 +393,11 @@ namespace fooddelivery.Migrations
                 name: "Images",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     Data = table.Column<byte[]>(type: "longblob", nullable: true),
-                    FoodId = table.Column<long>(type: "bigint", nullable: false)
+                    FoodId = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -368,8 +414,8 @@ namespace fooddelivery.Migrations
                 name: "Feedbacks",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
-                    OrderId = table.Column<long>(type: "bigint", nullable: false),
+                    UserId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    OrderId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
                     Score = table.Column<int>(type: "int", nullable: false),
                     Note = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
@@ -394,12 +440,12 @@ namespace fooddelivery.Migrations
                 name: "Suborders",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Note = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    FoodId = table.Column<long>(type: "bigint", nullable: false),
-                    OrderId = table.Column<long>(type: "bigint", nullable: false)
+                    FoodId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    OrderId = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -422,13 +468,13 @@ namespace fooddelivery.Migrations
                 name: "Changes",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Type = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     Count = table.Column<int>(type: "int", nullable: false),
-                    SuborderId = table.Column<long>(type: "bigint", nullable: false),
-                    FoodId = table.Column<long>(type: "bigint", nullable: false),
-                    IngredientId = table.Column<long>(type: "bigint", nullable: false)
+                    SuborderId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    FoodId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    IngredientId = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -451,6 +497,11 @@ namespace fooddelivery.Migrations
                 name: "IX_Additional_IngredientId",
                 table: "Additional",
                 column: "IngredientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_AddressTypeId",
+                table: "Addresses",
+                column: "AddressTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_UserId",
@@ -540,6 +591,11 @@ namespace fooddelivery.Migrations
                 column: "DeliveryStatusId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_UserId",
+                table: "Orders",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Suborders_FoodId",
                 table: "Suborders",
                 column: "FoodId");
@@ -552,6 +608,9 @@ namespace fooddelivery.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AccessKeys");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -608,6 +667,9 @@ namespace fooddelivery.Migrations
 
             migrationBuilder.DropTable(
                 name: "DeliveryStatus");
+
+            migrationBuilder.DropTable(
+                name: "AddressTypes");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

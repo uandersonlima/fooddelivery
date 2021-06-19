@@ -18,7 +18,7 @@ namespace fooddelivery.Repository.Repositories
             _context = context;
         }
 
-        public async Task<PaginationList<Food>> GetByCategoryIdAsync(long categoryId, AppView appview)
+        public async Task<PaginationList<Food>> GetByCategoryIdAsync(ulong categoryId, AppView appview)
         {
             var pagList = new PaginationList<Food>();
             var result = _context.Foods.Where(food => food.CategoryId == categoryId/* && food.Available*/).AsNoTracking().AsQueryable();

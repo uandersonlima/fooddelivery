@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using fooddelivery.Models;
+using fooddelivery.Models.Constants;
 using fooddelivery.Models.DTO;
 using fooddelivery.Models.Helpers;
 using fooddelivery.Service.Interfaces;
@@ -17,11 +18,13 @@ namespace fooddelivery.Controllers.Api
     {
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
+        private readonly IKeyService _keyService;
 
-        public UsersController(IMapper mapper, IUserService userService)
+        public UsersController(IMapper mapper, IUserService userService, IKeyService keyService)
         {
             _mapper = mapper;
             _userService = userService;
+            _keyService = keyService;
         }
 
         [HttpGet("{id}")]
@@ -92,6 +95,14 @@ namespace fooddelivery.Controllers.Api
                 return NotFound("user not found");
             }
 
+        }
+
+        [HttpGet("teste")]
+        public async Task<IActionResult> Teste()
+        {
+            await _keyService.CreateNewKeyAsync(new User {Email ="uandersonlimacs@gmail.com"}, KeyType.Verification);
+
+            return Ok("Tudo certinho");
         }
     }
 }

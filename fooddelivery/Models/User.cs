@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace fooddelivery.Models
 {
-    public class User : IdentityUser
+    public class User : IdentityUser<ulong>
     {
         public string Name { get; set; }
         public string CPF {get; set;}

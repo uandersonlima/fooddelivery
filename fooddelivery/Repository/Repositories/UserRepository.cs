@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using fooddelivery.Models;
+using fooddelivery.Models.Constants;
 using fooddelivery.Models.Helpers;
 using fooddelivery.Repository.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -35,8 +37,9 @@ namespace fooddelivery.Repository.Repositories
         }
 
         public async Task<StringBuilder> AddAsync(User user, string password)
-        {
+        {         
             var response = await _userManager.CreateAsync(user, password);
+            await _userManager.AddClaimsAsync(user, new List<Claim>{new Claim (type: Policy.EmailVerified, value: "false")});         
             return GetErrors(response);
         }
 

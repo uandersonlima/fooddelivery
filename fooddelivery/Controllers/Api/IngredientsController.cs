@@ -18,33 +18,55 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(long id)
+        public async Task<IActionResult> Get(ulong id)
         {
             var result = await _ingredientService.GetByKeyAsync(id);
             return Ok(result);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromRoute] AppView appview)
+        public async Task<IActionResult> GetAll([FromQuery] AppView appview)
         {
             var results = await _ingredientService.GetAllAsync(appview, x => x.Name.Contains(appview.Search));
             return Ok(results);
         }
+        
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Ingredient ingredient)
         {
+            if (ingredient == null)
+                return BadRequest();
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
             await _ingredientService.AddAsync(ingredient);
             return Ok(ingredient);
         }
+
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromRoute] long id)
+        public async Task<IActionResult> Delete([FromQuery] ulong id)
         {
+            var obj = _ingredientService.GetByKeyAsync(id);
+            if (obj == null)
+                return NotFound("recurso não encontrado");
+
             await _ingredientService.DeleteAsync(id);
             return Ok($"codigo {id} removido");
         }
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] Ingredient ingredient)
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(ulong id, [FromBody] Ingredient ingredient)
         {
+            var obj = _ingredientService.GetByKeyAsync(id);
+
+            if (obj == null)
+                return NotFound();
+
+            if (ingredient == null)
+                return BadRequest();
+
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
             await _ingredientService.UpdateAsync(ingredient);
             return Ok(ingredient);
         }

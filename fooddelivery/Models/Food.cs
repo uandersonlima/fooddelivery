@@ -8,7 +8,7 @@ namespace fooddelivery.Models
     public class Food
     {
         [Key]
-        public long Id { get; set; }
+        public ulong Id { get; set; }
 
         [Required]
         public string Name { get; set; }
@@ -20,7 +20,7 @@ namespace fooddelivery.Models
         [NotMapped]
         public bool Available { get; set; }
 
-        public long CategoryId { get; set; }
+        public ulong CategoryId { get; set; }
         public Category Category { get; set; }   
          
 

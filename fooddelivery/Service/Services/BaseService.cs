@@ -26,12 +26,12 @@ namespace fooddelivery.Service.Services
             return await _repository.GetAllAsync(appview, predicate);
         }
 
-        public async Task<T> GetByKeyAsync(long id)
+        public async Task<T> GetByKeyAsync(ulong id)
         {
             return await _repository.GetByKeyAsync(id);
         }
 
-        public async Task DeleteAsync(long id)
+        public async Task DeleteAsync(ulong id)
         {
             await DeleteAsync(await GetByKeyAsync(id));
         }

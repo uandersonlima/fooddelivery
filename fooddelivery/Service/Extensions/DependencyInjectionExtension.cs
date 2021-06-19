@@ -21,12 +21,15 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using fooddelivery.Models.Helpers;
 using fooddelivery.Models.DTO;
+using fooddelivery.Models.Constants;
+using Microsoft.AspNetCore.Authorization;
+using fooddelivery.Authorization;
 
 namespace fooddelivery.Service.Extensions
 {
     public static class DependencyInjectionExtension
     {
-        public static void AddDependencyInjection(this IServiceCollection svc, IConfiguration conf)
+        public static IServiceCollection AddDependencyInjection(this IServiceCollection svc, IConfiguration conf)
         {
 
             #region AutoMapper-Config
@@ -112,8 +115,67 @@ namespace fooddelivery.Service.Extensions
 
             //Banco de Dados
             svc.AddDbContext<FoodDeliveryContext>(options => options.UseMySql(conf.GetConnectionString("FoodDeliveryContext"), new MySqlServerVersion(new Version(8, 0, 20))));
+            svc.AddIdentity<User, IdentityRole<ulong>>()
+                .AddEntityFrameworkStores<FoodDeliveryContext>()
+                .AddDefaultTokenProviders();
 
+            svc.AddScoped<SeedData>();
 
+            //Services
+            svc.AddScoped<IAuthService, AuthService>();
+            svc.AddScoped<IAddressService, AddressService>();
+            svc.AddScoped<IAddressTypeService, AddressTypeService>();
+            svc.AddScoped<ICategoryService, CategoryService>();
+            svc.AddScoped<IChangeService, ChangeService>();
+            svc.AddScoped<IContactService, ContactService>();
+            svc.AddScoped<IDeliveryStatusService, DeliveryStatusService>();
+            svc.AddScoped<IEmailService, EmailService>();
+            svc.AddScoped<IFoodService, FoodService>();
+            svc.AddScoped<IFeedbackService, FeedbackService>();
+            svc.AddScoped<IImageService, ImageService>();
+            svc.AddScoped<IIngredientService, IngredientService>();
+            svc.AddScoped<IKeyService, KeyService>();
+            svc.AddScoped<IOrderService, OrderService>();
+            svc.AddScoped<ISuborderService, SuborderService>();
+            svc.AddScoped<IUserService, UserService>();
+            //Repositories
+            svc.AddScoped<IAddressRepository, AddressRepository>();
+            svc.AddScoped<IAddressTypeRepository, AddressTypeRepository>();
+            svc.AddScoped<ICategoryRepository, CategoryRepository>();
+            svc.AddScoped<IChangeRepository, ChangeRepository>();
+            svc.AddScoped<IContactRepository, ContactRepository>();
+            svc.AddScoped<IDeliveryStatusRepository, DeliveryStatusRepository>();
+            svc.AddScoped<IFoodRepository, FoodRepository>();
+            svc.AddScoped<IFeedbackRepository, FeedbackRepository>();
+            svc.AddScoped<IImageRepository, ImageRepository>();
+            svc.AddScoped<IIngredientRepository, IngredientRepository>();
+            svc.AddScoped<IKeyRepository, KeyRepository>();
+            svc.AddScoped<IOrderRepository, OrderRepository>();
+            svc.AddScoped<ISuborderRepository, SuborderRepository>();
+            svc.AddScoped<IUserRepository, UserRepository>();
+
+            //Authorizations
+            svc.AddSingleton<IAuthorizationHandler, EmailVerifiedHandler>();
+
+            return svc;
+        }
+
+        public static IServiceCollection AddCorPolicies(this IServiceCollection svc, IConfiguration cfg)
+        {
+            //Cors Policy
+            svc.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    policy =>
+                    {
+                        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                    });
+            });
+
+            return svc;
+        }
+        public static IServiceCollection AddAuthorizationPolicies(this IServiceCollection svc, IConfiguration cfg)
+        {
             svc.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -121,7 +183,7 @@ namespace fooddelivery.Service.Extensions
             })
             .AddJwtBearer(x =>
             {
-                var JWTBearer = conf.GetSection("Auth:JWTBearer");
+                var JWTBearer = cfg.GetSection("Auth:JWTBearer");
                 x.RequireHttpsMetadata = false;
                 x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
@@ -131,6 +193,11 @@ namespace fooddelivery.Service.Extensions
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
+            });
+            svc.AddAuthorization(options =>
+            {
+                options.AddPolicy(Policy.EmailVerified, policy =>
+                            policy.AddRequirements(new EmailVerifiedRequirement(true)));
             });
             // svc
             //      .AddAuthentication(o =>
@@ -220,49 +287,7 @@ namespace fooddelivery.Service.Extensions
             //     facebookOptions.AppSecret = facebookAuthNSection["AppSecret"];
             // });
 
-
-            svc.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-                                        .AddEntityFrameworkStores<FoodDeliveryContext>()
-                                        .AddDefaultTokenProviders();
-
-            
-            svc.AddScoped<SeedData>();
-
-            //Services
-            svc.AddScoped<IAuthService, AuthService>();
-            svc.AddScoped<IAddressService, AddressService>();
-            svc.AddScoped<ICategoryService, CategoryService>();
-            svc.AddScoped<IChangeService, ChangeService>();
-            svc.AddScoped<IContactService, ContactService>();
-            svc.AddScoped<IDeliveryStatusService, DeliveryStatusService>();
-            svc.AddScoped<IFoodService, FoodService>();
-            svc.AddScoped<IImageService, ImageService>();
-            svc.AddScoped<IIngredientService, IngredientService>();
-            svc.AddScoped<IOrderService, OrderService>();
-            svc.AddScoped<ISuborderService, SuborderService>();
-            svc.AddScoped<IUserService, UserService>();
-            //Repositories
-            svc.AddScoped<IAddressRepository, AddressRepository>();
-            svc.AddScoped<ICategoryRepository, CategoryRepository>();
-            svc.AddScoped<IChangeRepository, ChangeRepository>();
-            svc.AddScoped<IContactRepository, ContactRepository>();
-            svc.AddScoped<IDeliveryStatusRepository, DeliveryStatusRepository>();
-            svc.AddScoped<IFoodRepository, FoodRepository>();
-            svc.AddScoped<IImageRepository, ImageRepository>();
-            svc.AddScoped<IIngredientRepository, IngredientRepository>();
-            svc.AddScoped<IOrderRepository, OrderRepository>();
-            svc.AddScoped<ISuborderRepository, SuborderRepository>();
-            svc.AddScoped<IUserRepository, UserRepository>();
-            //Cors Policy
-            svc.AddCors(options =>
-            {
-                options.AddDefaultPolicy(
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-                    });
-            });
-
+            return svc;
         }
     }
 }

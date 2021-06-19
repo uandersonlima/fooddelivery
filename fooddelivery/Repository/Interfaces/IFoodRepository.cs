@@ -6,6 +6,6 @@ namespace fooddelivery.Repository.Interfaces
 {
     public interface IFoodRepository : IBaseRepository<Food>
     {
-         Task<PaginationList<Food>> GetByCategoryIdAsync(long categoryId, AppView appview);
+         Task<PaginationList<Food>> GetByCategoryIdAsync(ulong categoryId, AppView appview);
     }
 }
