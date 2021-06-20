@@ -48,18 +48,19 @@ namespace fooddelivery.Controllers.Api
         public async Task<IActionResult> Delete([FromQuery] ulong id)
         {
 
-            var obj = _categoryService.GetByKeyAsync(id);
+            var obj = await _categoryService.GetByKeyAsync(id);
             if (obj == null)
                 return NotFound("recurso não encontrado");
 
 
-            await _categoryService.DeleteAsync(id);
+            await _categoryService.DeleteAsync(obj);
+            
             return Ok($"codigo {id} removido");
         }
         [HttpPut ("{id}")]
         public async Task<IActionResult> Update(ulong id, [FromBody] Category category)
         {
-            var obj = _categoryService.GetByKeyAsync(id);
+            var obj = await _categoryService.GetByKeyAsync(id);
 
             if (obj == null)
                 return NotFound();

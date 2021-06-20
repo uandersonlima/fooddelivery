@@ -24,6 +24,13 @@ namespace fooddelivery.Controllers.Api
             return Ok(result);
         }
 
+        [HttpGet("AllByUserId/{userId}")]
+        public async Task<IActionResult> GetAll(ulong userId, [FromQuery] AppView appview)
+        {
+            var results = await _addressService.GetAllByUserIdAsync(userId, appview);
+            return Ok(results);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] AppView appview)
         {
@@ -48,11 +55,11 @@ namespace fooddelivery.Controllers.Api
         [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery] ulong id)
         {
-            var obj = _addressService.GetByKeyAsync(id);
+            var obj = await _addressService.GetByKeyAsync(id);
             if (obj == null)
                 return NotFound("recurso não encontrado");
 
-            await _addressService.DeleteAsync(id);
+            await _addressService.DeleteAsync(obj);
             return Ok($"codigo {id} removido");
         }
 
@@ -60,7 +67,7 @@ namespace fooddelivery.Controllers.Api
         public async Task<IActionResult> Update(ulong id, [FromBody] Address address)
         {
 
-            var obj = _addressService.GetByKeyAsync(id);
+            var obj = await _addressService.GetByKeyAsync(id);
 
             if (obj == null)
                 return NotFound();

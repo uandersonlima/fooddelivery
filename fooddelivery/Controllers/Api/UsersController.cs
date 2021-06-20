@@ -72,6 +72,7 @@ namespace fooddelivery.Controllers.Api
                 return Ok(user);
         }
 
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
@@ -83,7 +84,7 @@ namespace fooddelivery.Controllers.Api
             if (user != null)
             {
 
-                var errors = await _userService.DeleteAsync(id);
+                var errors = await _userService.DeleteAsync(user);
 
                 if (errors.Length != 0)
                     return UnprocessableEntity(errors.ToString());
@@ -97,12 +98,5 @@ namespace fooddelivery.Controllers.Api
 
         }
 
-        [HttpGet("teste")]
-        public async Task<IActionResult> Teste()
-        {
-            await _keyService.CreateNewKeyAsync(new User {Email ="uandersonlimacs@gmail.com"}, KeyType.Verification);
-
-            return Ok("Tudo certinho");
-        }
     }
 }

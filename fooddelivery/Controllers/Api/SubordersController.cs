@@ -44,17 +44,17 @@ namespace fooddelivery.Controllers.Api
         [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery] ulong id)
         {
-            var obj = _suborderService.GetByKeyAsync(id);
+            var obj = await _suborderService.GetByKeyAsync(id);
             if (obj == null)
                 return NotFound("recurso não encontrado");
 
-            await _suborderService.DeleteAsync(id);
+            await _suborderService.DeleteAsync(obj);
             return Ok($"codigo {id} removido");
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(ulong id, [FromBody] Suborder suborder)
         {
-            var obj = _suborderService.GetByKeyAsync(id);
+            var obj = await _suborderService.GetByKeyAsync(id);
 
             if (obj == null)
                 return NotFound();
