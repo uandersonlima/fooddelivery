@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using fooddelivery.Models.Users;
 
 namespace fooddelivery.Models
 {

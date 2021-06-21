@@ -1,9 +1,10 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
+using fooddelivery.Authorization.Requirement;
 using fooddelivery.Models.Constants;
 using Microsoft.AspNetCore.Authorization;
 
-namespace fooddelivery.Authorization
+namespace fooddelivery.Authorization.Handler
 {
     public class EmailVerifiedHandler : AuthorizationHandler<EmailVerifiedRequirement>
     {
@@ -14,7 +15,7 @@ namespace fooddelivery.Authorization
                 return Task.CompletedTask;
             }
 
-             var emailVerified = bool.Parse(context.User.FindFirst(claim => claim.Type == Policy.EmailVerified).Value); 
+            var emailVerified = bool.Parse(context.User.FindFirst(claim => claim.Type == Policy.EmailVerified).Value); 
 
             if (emailVerified == requirement.EmailVerified)
             {

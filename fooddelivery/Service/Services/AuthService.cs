@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using fooddelivery.Models;
 using fooddelivery.Models.Helpers;
+using fooddelivery.Models.Users;
 using fooddelivery.Service.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -17,16 +18,16 @@ namespace fooddelivery.Service.Services
     {
         private readonly JWTSettings _jwtSettings;
         private readonly SignInManager<User> _signInManager;
-        //private readonly RoleManager<User> _roleManager;
+        private readonly RoleManager<Role> _roleManager;
         private readonly UserManager<User> _userManager;
         private readonly IHttpContextAccessor _contextAccessor;
 
-        public AuthService(IOptions<JWTSettings> jwtSettings, SignInManager<User> signInManager, /*RoleManager<User> roleManager,
-        */ UserManager<User> userManager, IHttpContextAccessor contextAccessor)
+        public AuthService(IOptions<JWTSettings> jwtSettings, SignInManager<User> signInManager, RoleManager<Role> roleManager,
+        UserManager<User> userManager, IHttpContextAccessor contextAccessor)
         {
             _jwtSettings = jwtSettings.Value;
             _signInManager = signInManager;
-           // _roleManager = roleManager;
+            _roleManager = roleManager;
             _userManager = userManager;
             _contextAccessor = contextAccessor;
         }
@@ -37,7 +38,7 @@ namespace fooddelivery.Service.Services
             var x = _jwtSettings.SecretKey;
             var key = Encoding.ASCII.GetBytes(x);
 
-            var claims = await _userManager.GetClaimsAsync(user);       
+            var claims = await _userManager.GetClaimsAsync(user);
             claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
             claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()));
 

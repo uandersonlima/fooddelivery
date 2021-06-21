@@ -1,12 +1,15 @@
 using System.Threading.Tasks;
+using fooddelivery.Models.Constants;
 using fooddelivery.Models.Helpers;
 using fooddelivery.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace fooddelivery.Controllers.Api
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Policy = Policy.EmailVerified)]
     public class PreviouslyLoadedDataController : ControllerBase
     {
         private readonly IAddressTypeService _typeService;
@@ -26,6 +29,7 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpGet("getAddressType")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAddressType()
         {
             var results = await _typeService.GetAllAsync(new AppView(), null);

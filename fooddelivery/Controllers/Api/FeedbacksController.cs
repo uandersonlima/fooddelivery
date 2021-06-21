@@ -1,11 +1,17 @@
 using System.Threading.Tasks;
+using fooddelivery.Models.Constants;
 using fooddelivery.Models.Contracts;
 using fooddelivery.Models.Helpers;
 using fooddelivery.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace fooddelivery.Controllers.Api
 {
+
+    [ApiController]
+    [Route("api/[controller]")]
+    [Authorize(Policy = Policy.EmailVerified)]
     public class FeedbacksController : ControllerBase
     {
         private readonly IFeedbackService _feedService;
@@ -28,7 +34,7 @@ namespace fooddelivery.Controllers.Api
             var results = await _feedService.GetAllByUserIdAsync(userId, appview);
             return Ok(results);
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] AppView appview)
         {

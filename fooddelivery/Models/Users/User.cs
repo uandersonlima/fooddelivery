@@ -4,7 +4,7 @@ using fooddelivery.Libraries.Validations;
 using fooddelivery.Models.Contracts;
 using Microsoft.AspNetCore.Identity;
 
-namespace fooddelivery.Models
+namespace fooddelivery.Models.Users
 {
     public class User : IdentityUser<ulong>
     {

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using fooddelivery.Models;
 using fooddelivery.Models.Access;
 using fooddelivery.Models.Constants;
+using fooddelivery.Models.Users;
 using fooddelivery.Repository.Interfaces;
 using fooddelivery.Service.Interfaces;
 
@@ -44,18 +45,16 @@ namespace fooddelivery.Service.Services
                 DataGerada = DateTime.Now,
                 Email = user.Email
             };
+
             if (keyType == KeyType.Verification)
-            {
                 _emailSvc.SendEmailVerificationAsync(user, key);
-            }
             else if (keyType == KeyType.Recovery)
-            {
                 _emailSvc.SendEmailRecoveryAsync(user, key);
-            }
+
             await AddAsync(newKey);
         }
 
-        public async Task DeleteAsync(AccessKey acessKey) => await _codigoRepos.DeleteAsync(acessKey);
+        public async Task DeleteAsync(AccessKey accessKey) => await _codigoRepos.DeleteAsync(accessKey);
 
         public async Task<TimeSpan> ElapsedTimeAsync(AccessKey accessKey)
         {

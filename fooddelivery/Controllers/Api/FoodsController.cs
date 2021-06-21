@@ -10,6 +10,7 @@ namespace fooddelivery.Controllers.Api
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Policy = Policy.EmailVerified)]
     public class FoodsController : ControllerBase
     {
         private readonly IFoodService _foodService;
@@ -20,25 +21,27 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = Policy.EmailVerified)]
         public async Task<IActionResult> Get(ulong id)
         {
             var result = await _foodService.GetByKeyAsync(id);
             return Ok(result);
         }
 
-        [HttpGet("ByCategoryId/{categoryid}")]
+        [HttpGet("ByCategoryId/{categoryid}"), AllowAnonymous]
         public async Task<IActionResult> GetByCategoryId([FromQuery] ulong CategoryId, [FromQuery] AppView appview)
         {
             var results = await _foodService.GetByCategoryIdAsync(CategoryId, appview);
             return Ok(results);
         }
 
-        [HttpGet/*, Authorize(Policy = Policy.EmailVerified)*/]
+        [HttpGet, AllowAnonymous]
         public async Task<IActionResult> GetAll([FromQuery] AppView appview)
         {
             var results = await _foodService.GetAllAsync(appview, x => x.Name.Contains(appview.Search));
             return Ok(results);
         }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Food food)
         {
@@ -50,6 +53,7 @@ namespace fooddelivery.Controllers.Api
             await _foodService.AddAsync(food);
             return Ok(food);
         }
+        
         [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery] ulong id)
         {

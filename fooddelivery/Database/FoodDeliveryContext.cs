@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using fooddelivery.Models.Contracts;
 using fooddelivery.Models.Access;
 using Microsoft.AspNetCore.Identity;
+using fooddelivery.Models.Users;
 
 namespace fooddelivery.Database
 {
-    public class FoodDeliveryContext : IdentityDbContext<User, IdentityRole<ulong>, ulong, IdentityUserClaim<ulong>, IdentityUserRole<ulong>, IdentityUserLogin<ulong>,
-        IdentityRoleClaim<ulong>, IdentityUserToken<ulong>>
+    public class FoodDeliveryContext : IdentityDbContext<User, Role, ulong, UserClaims, UserRoles, UserLogins,
+        RoleClaims, UserTokens>
     {
         public FoodDeliveryContext(DbContextOptions<FoodDeliveryContext> options) : base(options) { }
 
@@ -35,6 +36,18 @@ namespace fooddelivery.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>()
+                        .ToTable("Users")
+                        .Property(p => p.Id)
+                        .HasColumnName("Id");
+            modelBuilder.Entity<UserClaims>().ToTable("Claims");
+            modelBuilder.Entity<UserLogins>().ToTable("Logins");
+            modelBuilder.Entity<UserTokens>().ToTable("Tokens");
+            modelBuilder.Entity<Role>().ToTable("Roles");
+            modelBuilder.Entity<RoleClaims>().ToTable("RoleClaims");
+            modelBuilder.Entity<UserRoles>().ToTable("UserRoles");
+
             modelBuilder.Entity<AccessKey>().HasKey(pk =>
                     new { pk.Key, pk.Email, pk.KeyType });
             modelBuilder.Entity<Additional>().HasKey(pk =>

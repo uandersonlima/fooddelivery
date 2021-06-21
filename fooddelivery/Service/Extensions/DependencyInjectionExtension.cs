@@ -23,7 +23,9 @@ using fooddelivery.Models.Helpers;
 using fooddelivery.Models.DTO;
 using fooddelivery.Models.Constants;
 using Microsoft.AspNetCore.Authorization;
-using fooddelivery.Authorization;
+using fooddelivery.Authorization.Requirement;
+using fooddelivery.Authorization.Handler;
+using fooddelivery.Models.Users;
 
 namespace fooddelivery.Service.Extensions
 {
@@ -113,9 +115,14 @@ namespace fooddelivery.Service.Extensions
                 options.User.RequireUniqueEmail = true;
             });
 
-            //Banco de Dados
-            svc.AddDbContext<FoodDeliveryContext>(options => options.UseMySql(conf.GetConnectionString("FoodDeliveryContext"), new MySqlServerVersion(new Version(8, 0, 20))));
-            svc.AddIdentity<User, IdentityRole<ulong>>()
+            //Banco de Dados Mysql AWS
+            svc.AddDbContext<FoodDeliveryContext>(options => options.UseMySql(conf.GetConnectionString("AWSMySql"), new MySqlServerVersion(new Version(8, 0, 20))));
+
+            //Banco de dados Mysql Local 
+            //svc.AddDbContext<FoodDeliveryContext>(options => options.UseMySql(conf.GetConnectionString("LocalMySql"), new MySqlServerVersion(new Version(8, 0, 20))));
+
+            svc.AddDefaultIdentity<User>()
+                .AddRoles<Role>()
                 .AddEntityFrameworkStores<FoodDeliveryContext>()
                 .AddDefaultTokenProviders();
 
@@ -135,6 +142,7 @@ namespace fooddelivery.Service.Extensions
             svc.AddScoped<IImageService, ImageService>();
             svc.AddScoped<IIngredientService, IngredientService>();
             svc.AddScoped<IKeyService, KeyService>();
+            svc.AddScoped<IPermissionsService, PermissionsService>();
             svc.AddScoped<IOrderService, OrderService>();
             svc.AddScoped<ISuborderService, SuborderService>();
             svc.AddScoped<IUserService, UserService>();

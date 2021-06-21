@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using fooddelivery.Models;
 using fooddelivery.Models.Helpers;
+using fooddelivery.Models.Users;
 using fooddelivery.Repository.Interfaces;
 using fooddelivery.Service.Interfaces;
 

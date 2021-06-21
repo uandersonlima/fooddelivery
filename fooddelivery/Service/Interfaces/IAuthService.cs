@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using fooddelivery.Models;
+using fooddelivery.Models.Users;
 
 namespace fooddelivery.Service.Interfaces
 {

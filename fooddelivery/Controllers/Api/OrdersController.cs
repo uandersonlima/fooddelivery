@@ -1,13 +1,16 @@
 using System.Threading.Tasks;
 using fooddelivery.Models;
+using fooddelivery.Models.Constants;
 using fooddelivery.Models.Helpers;
 using fooddelivery.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace fooddelivery.Controllers.Api
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Policy = Policy.EmailVerified)]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;

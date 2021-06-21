@@ -10,7 +10,7 @@ namespace fooddelivery.Controllers.Api
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize]
+    [Authorize(Policy = Policy.EmailVerified)]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -21,13 +21,15 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> Get(ulong id)
         {
             var result = await _categoryService.GetByKeyAsync(id);
             return Ok(result);
         }
 
-        [HttpGet/*, Authorize(Policy = Policy.EmailVerified)*/]
+        [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll([FromQuery] AppView appview)
         {
             var results = await _categoryService.GetAllAsync(appview, x => x.Name.Contains(appview.Search));

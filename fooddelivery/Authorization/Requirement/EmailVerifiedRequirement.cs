@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 
-namespace fooddelivery.Authorization
+namespace fooddelivery.Authorization.Requirement
 {
     public class EmailVerifiedRequirement : IAuthorizationRequirement
     {

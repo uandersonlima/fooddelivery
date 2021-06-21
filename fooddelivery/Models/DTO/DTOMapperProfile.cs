@@ -1,4 +1,5 @@
 using AutoMapper;
+using fooddelivery.Models.Users;
 
 namespace fooddelivery.Models.DTO
 {

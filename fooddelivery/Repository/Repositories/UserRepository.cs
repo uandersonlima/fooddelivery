@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using fooddelivery.Models;
 using fooddelivery.Models.Constants;
 using fooddelivery.Models.Helpers;
+using fooddelivery.Models.Users;
 using fooddelivery.Repository.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

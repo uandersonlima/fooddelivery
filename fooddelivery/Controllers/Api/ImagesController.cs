@@ -1,13 +1,16 @@
 using System.Threading.Tasks;
 using fooddelivery.Models;
+using fooddelivery.Models.Constants;
 using fooddelivery.Models.Helpers;
 using fooddelivery.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace fooddelivery.Controllers.Api
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Policy = Policy.EmailVerified)]
     public class ImagesController : ControllerBase
     {
         private readonly IImageService _imageService;
@@ -17,14 +20,14 @@ namespace fooddelivery.Controllers.Api
             _imageService = imageService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), AllowAnonymous]
         public async Task<IActionResult> Get(ulong id)
         {
             var result = await _imageService.GetByKeyAsync(id);
             return Ok(result);
         }
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public async Task<IActionResult> GetAll([FromQuery] AppView appview)
         {
             var results = await _imageService.GetAllAsync(appview, x => x.Name.Contains(appview.Search));

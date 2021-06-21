@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
-using fooddelivery.Models;
 using fooddelivery.Models.Helpers;
+using fooddelivery.Models.Users;
 using fooddelivery.Service.Interfaces;
 using MailKit.Net.Smtp;
 using MailKit.Security;

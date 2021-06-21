@@ -1,13 +1,16 @@
 using System.Threading.Tasks;
 using fooddelivery.Models;
+using fooddelivery.Models.Constants;
 using fooddelivery.Models.Helpers;
 using fooddelivery.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace fooddelivery.Controllers.Api
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Policy = Policy.EmailVerified)]
     public class IngredientsController : ControllerBase
     {
         private readonly IIngredientService _ingredientService;
@@ -17,14 +20,14 @@ namespace fooddelivery.Controllers.Api
             _ingredientService = ingredientService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), AllowAnonymous]
         public async Task<IActionResult> Get(ulong id)
         {
             var result = await _ingredientService.GetByKeyAsync(id);
             return Ok(result);
         }
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public async Task<IActionResult> GetAll([FromQuery] AppView appview)
         {
             var results = await _ingredientService.GetAllAsync(appview, x => x.Name.Contains(appview.Search));
