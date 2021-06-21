@@ -38,9 +38,10 @@ namespace fooddelivery.Repository.Repositories
         }
 
         public async Task<StringBuilder> AddAsync(User user, string password)
-        {         
+        {
             var response = await _userManager.CreateAsync(user, password);
-            await _userManager.AddClaimsAsync(user, new List<Claim>{new Claim (type: Policy.EmailVerified, value: false.ToString())});         
+            if (response.Succeeded)
+                await _userManager.AddClaimsAsync(user, new List<Claim> { new Claim(type: Policy.EmailVerified, value: false.ToString())});
             return GetErrors(response);
         }
 
