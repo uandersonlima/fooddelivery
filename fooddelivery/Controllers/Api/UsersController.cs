@@ -92,8 +92,7 @@ namespace fooddelivery.Controllers.Api
                 user.EmailConfirmed = !user.EmailConfirmed;
                 await _userService.UpdateAsync(user);
                 await _keyService.DeleteAsync(serverKey);
-                await _userManager.AddClaimAsync(user, new Claim(Policy.EmailVerified, true.ToString()));
-
+                await _userManager.ReplaceClaimAsync(user, new Claim(Policy.EmailVerified, false.ToString()), new Claim(Policy.EmailVerified, true.ToString()));       
                 return Ok("Email confirmado com sucesso");
             }
             return Ok("Email já foi confirmado");
@@ -245,6 +244,9 @@ namespace fooddelivery.Controllers.Api
             }
 
         }
+
+
+
 
     }
 }
