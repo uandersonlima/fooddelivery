@@ -10,7 +10,9 @@ namespace fooddelivery.Models.DTO
         public string Name { get; set; }
 
         [Required]
+        [CPFUnico]
         [CPF]
+
         public string CPF { get; set; }
 
         [Required]

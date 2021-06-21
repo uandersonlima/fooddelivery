@@ -189,6 +189,9 @@ namespace fooddelivery.Controllers.Api
         [HttpPost, AllowAnonymous]
         public async Task<IActionResult> Post([FromBody] RegisterUserDTO userDTO)
         {
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
             var user = _mapper.Map<RegisterUserDTO, User>(userDTO);
 
             var errors = await _userService.AddAsync(user, userDTO.Password);
