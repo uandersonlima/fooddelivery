@@ -47,7 +47,7 @@ namespace fooddelivery.Controllers.Api
         {
             var loggedInUser = await _authService.GetLoggedUserAsync();
             if (loggedInUser is null)
-                return Unauthorized("é necessário estar logado");
+                return BadRequest();
 
             var serverkey = new AccessKey { Email = loggedInUser.Email, KeyType = KeyType.Verification };
             var elapsedTime = await _keyService.ElapsedTimeAsync(serverkey);
@@ -64,21 +64,25 @@ namespace fooddelivery.Controllers.Api
             return Ok();
         }
 
-        [HttpPost("confirmEmail")]
-        public async Task<IActionResult> ConfirmEmail([FromHeader] EmailDTO email, [FromBody] string clientKey)
+        [HttpPost("confirmEmail"), AllowAnonymous, Authorize]
+        public async Task<IActionResult> ConfirmEmail([FromBody] string clientKey)
         {
+            var loggedInUser = await _authService.GetLoggedUserAsync();
+            if (loggedInUser is null)
+                return BadRequest();
+
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
             if (string.IsNullOrEmpty(clientKey))
                 return BadRequest("forneça os dados esperados");
 
-            var serverKey = await _keyService.SearchKeyAsync(email.EmailAddress, clientKey, KeyType.Verification);
+            var serverKey = await _keyService.SearchKeyAsync(loggedInUser.Email, clientKey, KeyType.Verification);
 
             if (serverKey == null)
                 return NotFound("chave correspondente ao email não encontrada");
 
-            var user = await _userService.GetUserByEmailAsync(email.EmailAddress);
+            var user = await _userService.GetUserByEmailAsync(loggedInUser.Email);
 
             if (user == null)
                 return NotFound("não pudemos processar essa chamada, nenhum usuário com email correspondente encontrado");
@@ -96,7 +100,7 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpPost("newEmailRecovery"), AllowAnonymous]
-        public async Task<IActionResult> newEmailRecovery([FromHeader] EmailDTO email)
+        public async Task<IActionResult> newEmailRecovery([FromBody] EmailDTO email)
         {
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
@@ -122,7 +126,7 @@ namespace fooddelivery.Controllers.Api
 
 
         [HttpPost("ResetPassword"), AllowAnonymous]
-        public async Task<IActionResult> ResetPassword([FromHeader] EmailDTO email, [FromBody] UserResetPasswordDTO userResetPassword)
+        public async Task<IActionResult> ResetPassword([FromBody] UserResetPasswordDTO userResetPassword)
         {
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
@@ -130,12 +134,12 @@ namespace fooddelivery.Controllers.Api
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
-            var serverKey = await _keyService.SearchKeyAsync(email.EmailAddress, userResetPassword.ClientKey, KeyType.Recovery);
+            var serverKey = await _keyService.SearchKeyAsync(userResetPassword.EmailAddress, userResetPassword.ClientKey, KeyType.Recovery);
 
             if (serverKey == null)
                 return NotFound("chave correspondente ao email não encontrada");
 
-            var user = await _userService.GetUserByEmailAsync(email.EmailAddress);
+            var user = await _userService.GetUserByEmailAsync(userResetPassword.EmailAddress);
 
             if (user == null)
                 return NotFound("não pudemos processar essa chamada, nenhum usuário com email correspondente encontrado");

@@ -4,6 +4,10 @@ namespace fooddelivery.Models.DTO
 {
     public class UserResetPasswordDTO
     {
+
+        [Required]
+        [EmailAddress]
+        public string EmailAddress { get; set; }
         public string ClientKey { get; set; }
 
         [Required(ErrorMessage = "Informe o campo {0}", AllowEmptyStrings = false)]

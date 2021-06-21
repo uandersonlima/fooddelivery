@@ -16,15 +16,18 @@ namespace fooddelivery.Service.Services
 {
     public class AuthService : IAuthService
     {
+        private readonly IAddressService _addressService;
         private readonly JWTSettings _jwtSettings;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly UserManager<User> _userManager;
         private readonly IHttpContextAccessor _contextAccessor;
 
-        public AuthService(IOptions<JWTSettings> jwtSettings, SignInManager<User> signInManager, RoleManager<Role> roleManager,
+
+        public AuthService(IAddressService addressService, IOptions<JWTSettings> jwtSettings, SignInManager<User> signInManager, RoleManager<Role> roleManager,
         UserManager<User> userManager, IHttpContextAccessor contextAccessor)
         {
+            _addressService = addressService;
             _jwtSettings = jwtSettings.Value;
             _signInManager = signInManager;
             _roleManager = roleManager;
@@ -54,7 +57,10 @@ namespace fooddelivery.Service.Services
 
         public async Task<User> GetLoggedUserAsync()
         {
-            return await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var addresses = await _addressService.GetAllByUserIdAsync(user.Id, new AppView());
+            user.Addresses = addresses;
+            return user;
         }
     }
 }

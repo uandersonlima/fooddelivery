@@ -31,8 +31,6 @@ namespace fooddelivery.Controllers.Api
 
                 if (user != null)
                 {
-                    var addresses = await _addressService.GetAllByUserIdAsync(user.Id, new AppView());
-                    user.Addresses = addresses;
                     if(await _userService.CheckPasswordAsync(user, login.Password))
                     {
                         var token = await _authService.CreateTokenAsync(user);

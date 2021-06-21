@@ -13,7 +13,7 @@ namespace fooddelivery.Service.Interfaces
         Task CreateNewKeyAsync(User user, string keytype);
         Task DeleteAsync(AccessKey accessKey);
         Task<TimeSpan> ElapsedTimeAsync(AccessKey accessKey);
-        Task<AccessKey> SearchKeyAsync(string key, string email, string keytype);
+        Task<AccessKey> SearchKeyAsync(string email, string key, string keytype);
         Task<AccessKey> SearchKeyByEmailAndTypeAsync(string email, string keytype);
     }
 }

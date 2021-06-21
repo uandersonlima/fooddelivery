@@ -2,7 +2,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using fooddelivery.Database;
 using fooddelivery.Models.Access;
-using fooddelivery.Models.Constants;
 using fooddelivery.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,17 +28,16 @@ namespace fooddelivery.Repository.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<AccessKey> SearchKeyAsync(string key, string email, string keytype)
+        public async Task<AccessKey> SearchKeyAsync(string email, string key, string keytype)
         {
             return await _context.AccessKeys.AsNoTracking()
-                        .Where(ak => ak.Key == key && ak.Email.ToLower() == email.ToLower() && ak.KeyType == keytype)
+                        .Where(ak => ak.Email.Trim().ToLower() == email.Trim().ToLower() && ak.Key == key && ak.KeyType == keytype)
                         .FirstOrDefaultAsync();
         }
         public async Task<AccessKey> SearchKeyByEmailAndTypeAsync(string email, string keytype)
         {
             return await _context.AccessKeys.AsNoTracking().
-                        Where(ak => ak.KeyType == keytype
-                        && ak.Email.ToLower() == email.ToLower()).FirstOrDefaultAsync();
+                        Where(ak =>  ak.Email.Trim().ToLower() == email.Trim().ToLower()  &&  ak.KeyType == keytype).FirstOrDefaultAsync();
         }
     }
 }

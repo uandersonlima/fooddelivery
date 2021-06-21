@@ -70,8 +70,8 @@ namespace fooddelivery.Service.Services
         =>
         await _codigoRepos.SearchKeyByEmailAndTypeAsync(email, keyType);
 
-        public async Task<AccessKey> SearchKeyAsync(string key, string email, string keyType)
+        public async Task<AccessKey> SearchKeyAsync(string email, string key, string keyType)
         =>
-        await _codigoRepos.SearchKeyAsync(key, email, keyType);
+        await _codigoRepos.SearchKeyAsync(email, key, keyType);
     }
 }
