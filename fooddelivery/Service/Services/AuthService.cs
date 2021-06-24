@@ -52,7 +52,7 @@ namespace fooddelivery.Service.Services
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
-            
+
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
@@ -60,8 +60,11 @@ namespace fooddelivery.Service.Services
         public async Task<User> GetLoggedUserAsync()
         {
             var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
-            var addresses = await _addressService.GetAllByUserIdAsync(user.Id, new AppView());
-            user.Addresses = addresses;
+            if (user != null)
+            {
+                var addresses = await _addressService.GetAllByUserIdAsync(user.Id, new AppView());
+                user.Addresses = addresses;
+            }
             return user;
         }
     }

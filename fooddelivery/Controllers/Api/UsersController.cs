@@ -64,12 +64,12 @@ namespace fooddelivery.Controllers.Api
             return Ok();
         }
 
-        [HttpPost("confirmEmail"), AllowAnonymous, Authorize]
+        [HttpPost("confirmEmail"), AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail([FromBody] string clientKey)
         {
             var loggedInUser = await _authService.GetLoggedUserAsync();
             if (loggedInUser is null)
-                return BadRequest();
+                return Unauthorized("é preciso estar logado para confirmar o email");
 
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
