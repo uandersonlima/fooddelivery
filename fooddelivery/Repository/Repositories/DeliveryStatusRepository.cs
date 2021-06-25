@@ -16,6 +16,7 @@ namespace fooddelivery.Repository.Repositories
         public DeliveryStatusRepository(FoodDeliveryContext context) : base(context)
         {
             _context = context;
+            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public bool HasValue()

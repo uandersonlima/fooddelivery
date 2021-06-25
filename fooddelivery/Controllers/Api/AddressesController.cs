@@ -83,7 +83,6 @@ namespace fooddelivery.Controllers.Api
 
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
-
             
             await _addressService.UpdateAsync(address);
             return Ok(address);

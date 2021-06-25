@@ -31,7 +31,7 @@ namespace fooddelivery.Controllers.Api
 
                 if (user != null)
                 {
-                    if(await _userService.CheckPasswordAsync(user, login.Password))
+                    if (await _userService.CheckPasswordAsync(user, login.Password))
                     {
                         var token = await _authService.CreateTokenAsync(user);
                         return Ok(token);
@@ -45,6 +45,12 @@ namespace fooddelivery.Controllers.Api
 
         [HttpGet, Authorize]
         public async Task<IActionResult> GetLoggedUser()
+        {
+            return Ok(await _authService.GetLoggedUserAsync());
+        }
+        
+        [HttpPost, Authorize]
+        public async Task<IActionResult> GetLoggedUserPost()
         {
             return Ok(await _authService.GetLoggedUserAsync());
         }

@@ -1,6 +1,7 @@
 using fooddelivery.Database;
 using fooddelivery.Models;
 using fooddelivery.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace fooddelivery.Repository.Repositories
 {
@@ -11,6 +12,7 @@ namespace fooddelivery.Repository.Repositories
         public ImageRepository(FoodDeliveryContext context) : base(context)
         {
             _context = context;
+            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
     }
 }

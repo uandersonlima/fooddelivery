@@ -16,6 +16,7 @@ namespace fooddelivery.Repository.Repositories
         public BaseRepository(FoodDeliveryContext context)
         {
             _context = context;
+            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public virtual async Task AddAsync(T entity)

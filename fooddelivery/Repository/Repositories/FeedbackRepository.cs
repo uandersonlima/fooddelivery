@@ -16,6 +16,7 @@ namespace fooddelivery.Repository.Repositories
         public FeedbackRepository(FoodDeliveryContext context) : base(context)
         {
             _context = context;
+            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public override async Task<Feedbacks> GetByKeyAsync(ulong id)

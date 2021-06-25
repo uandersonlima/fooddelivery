@@ -1,6 +1,7 @@
 using fooddelivery.Database;
 using fooddelivery.Models;
 using fooddelivery.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace fooddelivery.Repository.Repositories
 {
@@ -10,6 +11,7 @@ namespace fooddelivery.Repository.Repositories
         public IngredientRepository(FoodDeliveryContext context) : base(context)
         {
             _context = context;
+            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
     }
 }

@@ -16,6 +16,7 @@ namespace fooddelivery.Repository.Repositories
         public FoodRepository(FoodDeliveryContext context) : base(context)
         {
             _context = context;
+            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public async Task<PaginationList<Food>> GetByCategoryIdAsync(ulong categoryId, AppView appview)
