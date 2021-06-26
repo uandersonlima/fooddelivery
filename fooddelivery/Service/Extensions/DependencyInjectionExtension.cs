@@ -173,7 +173,7 @@ namespace fooddelivery.Service.Extensions
             //Cors Policy
             svc.AddCors(options =>
             {
-                options.AddDefaultPolicy(
+                options.AddPolicy("WebPolicy",
                     policy =>
                     {
                         policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();

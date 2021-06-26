@@ -16,7 +16,7 @@ namespace fooddelivery
             _configuration = configuration;
         }
 
-        private readonly IConfiguration _configuration; 
+        private readonly IConfiguration _configuration;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -36,17 +36,11 @@ namespace fooddelivery
                 c.RoutePrefix = "";
             });
             dataSeed.Initialize();
-
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
+            app.UseCors("WebPolicy");
             app.UseAuthentication();
-
             app.UseAuthorization();
-
-            app.UseCors();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
