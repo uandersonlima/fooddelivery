@@ -42,7 +42,7 @@ namespace fooddelivery.Controllers.Api
         /// <param name=""></param>'
         /// <returns>é necessário está logado</returns>
 
-        [HttpPost("newEmailConfirmation")]
+        [HttpPost("newEmailConfirmation"), AllowAnonymous]
         public async Task<IActionResult> NewEmailConfirmation()
         {
             var loggedInUser = await _authService.GetLoggedUserAsync();
@@ -67,6 +67,7 @@ namespace fooddelivery.Controllers.Api
         [HttpPost("confirmEmail"), AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail([FromBody] string clientKey)
         {
+            //A partir do teu authorization recupera o usuário logado.
             var loggedInUser = await _authService.GetLoggedUserAsync();
             if (loggedInUser is null)
                 return Unauthorized("é preciso estar logado para confirmar o email");
@@ -79,12 +80,12 @@ namespace fooddelivery.Controllers.Api
 
             var serverKey = await _keyService.SearchKeyAsync(loggedInUser.Email, clientKey, KeyType.Verification);
 
-            if (serverKey == null)
+            if (serverKey is null)
                 return NotFound("chave correspondente ao email não encontrada");
 
             var user = await _userService.GetUserByEmailAsync(loggedInUser.Email);
 
-            if (user == null)
+            if (user is null)
                 return NotFound("não pudemos processar essa chamada, nenhum usuário com email correspondente encontrado");
 
             if (!user.EmailConfirmed)
@@ -92,7 +93,8 @@ namespace fooddelivery.Controllers.Api
                 user.EmailConfirmed = !user.EmailConfirmed;
                 await _userService.UpdateAsync(user);
                 await _keyService.DeleteAsync(serverKey);
-                await _userManager.ReplaceClaimAsync(user, new Claim(Policy.EmailVerified, false.ToString()), new Claim(Policy.EmailVerified, true.ToString()));       
+                await _userManager.RemoveClaimAsync(user, new Claim(Policy.EmailVerified, false.ToString()));   
+                await _userManager.AddClaimAsync(user, new Claim(Policy.EmailVerified, true.ToString()));   
                 return Ok("Email confirmado com sucesso");
             }
             return Ok("Email já foi confirmado");
