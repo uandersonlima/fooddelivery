@@ -15,6 +15,11 @@ namespace fooddelivery.Service.Services
             _repository = repository;
         }
 
+        public async Task<PaginationList<Order>> GetAllByAddressIdAsync(ulong addressId, AppView appview)
+        {
+            return await _repository.GetAllByUserIdAsync(addressId, appview);
+        }
+
         public async Task<PaginationList<Order>> GetAllByUserIdAsync(ulong userId, AppView appview)
         {
             return await _repository.GetAllByUserIdAsync(userId, appview);

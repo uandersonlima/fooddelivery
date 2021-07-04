@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using fooddelivery.Database;
 using fooddelivery.Models.Contracts;
@@ -9,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace fooddelivery.Repository.Repositories
 {
-    public class FeedbackRepository: BaseRepository<Feedbacks>, IFeedbackRepository
+    public class FeedbackRepository : BaseRepository<Feedbacks>, IFeedbackRepository
     {
         private readonly FoodDeliveryContext _context;
 
@@ -23,6 +24,40 @@ namespace fooddelivery.Repository.Repositories
         {
             return await _context.Feedbacks.FindAsync(null, id);
         }
+
+        public override async Task<PaginationList<Feedbacks>> GetAllAsync(AppView appview, Expression<Func<Feedbacks, bool>> predicate)
+        {
+            var pagList = new PaginationList<Feedbacks>();
+            var result = _context.Set<Feedbacks>()
+                                 .Include(feed => feed.User)
+                                 .Include(feed => feed.Order)
+                                 .ThenInclude(order => order.Suborders)
+                                 .ThenInclude(sub => sub.Food).AsNoTracking().AsQueryable();
+
+
+            if (appview.CheckSearch() || appview.CheckDate())
+            {
+                result = result.Where(predicate);
+            }
+            if (appview.CheckPagination())
+            {
+                var totalRecords = await result.CountAsync();
+                result = result.Skip((appview.NumberPag.Value - 1) * appview.RecordPerPage.Value).Take(appview.RecordPerPage.Value);
+
+                var pagination = new Pagination
+                {
+                    NumberPag = appview.NumberPag.Value,
+                    RecordPerPage = appview.RecordPerPage.Value,
+                    TotalRecords = totalRecords,
+                    TotalPages = (int)Math.Ceiling((double)totalRecords / appview.RecordPerPage.Value)
+                };
+
+                pagList.Pagination = pagination;
+            }
+            pagList.AddRange(await result.ToListAsync());
+            return pagList;
+        }
+
 
         public async Task<PaginationList<Feedbacks>> GetAllByUserIdAsync(ulong userId, AppView appview)
         {

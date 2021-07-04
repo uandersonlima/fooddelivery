@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,6 +17,8 @@ namespace fooddelivery.Models
         public decimal Price { get; set; }
 
         public string Note { get; set; }
+
+        public DateTime ShoppingTime { get; set; }
 
 
         [ForeignKey("DeliveryStatus")]

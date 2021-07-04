@@ -17,7 +17,6 @@ namespace fooddelivery.Models
         [Column(TypeName = "decimal(10, 2)")]
         public decimal Price { get; set; }
         
-        [NotMapped]
         public bool Available { get; set; }
 
         public ulong CategoryId { get; set; }

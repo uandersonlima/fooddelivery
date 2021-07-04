@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using fooddelivery.Database;
 using fooddelivery.Models;
@@ -18,7 +19,37 @@ namespace fooddelivery.Repository.Repositories
             _context = context;
             _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
+        public override async Task<PaginationList<Food>> GetAllAsync(AppView appview, Expression<Func<Food, bool>> predicate)
+        {
+            var pagList = new PaginationList<Food>();
+            var result = _context.Set<Food>()
+                                 .Include(food => food.Images)
+                                 .Include(food => food.FoodIngredients)
+                                 .AsNoTracking().AsQueryable();
 
+
+            if (appview.CheckSearch() || appview.CheckDate())
+            {
+                result = result.Where(predicate);
+            }
+            if (appview.CheckPagination())
+            {
+                var totalRecords = await result.CountAsync();
+                result = result.Skip((appview.NumberPag.Value - 1) * appview.RecordPerPage.Value).Take(appview.RecordPerPage.Value);
+
+                var pagination = new Pagination
+                {
+                    NumberPag = appview.NumberPag.Value,
+                    RecordPerPage = appview.RecordPerPage.Value,
+                    TotalRecords = totalRecords,
+                    TotalPages = (int)Math.Ceiling((double)totalRecords / appview.RecordPerPage.Value)
+                };
+
+                pagList.Pagination = pagination;
+            }
+            pagList.AddRange(await result.ToListAsync());
+            return pagList;
+        }
         public async Task<PaginationList<Food>> GetByCategoryIdAsync(ulong categoryId, AppView appview)
         {
             var pagList = new PaginationList<Food>();

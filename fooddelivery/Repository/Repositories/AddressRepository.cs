@@ -22,7 +22,7 @@ namespace fooddelivery.Repository.Repositories
         public async Task<PaginationList<Address>> GetAllByUserIdAsync(ulong userId, AppView appview)
         {
             var pagList = new PaginationList<Address>();
-            var result = _context.Addresses.Where(order => order.UserId == userId)
+            var result = _context.Addresses.Where(address => address.UserId == userId && !address.isDeleted)
                                                  .AsNoTracking().AsQueryable();
 
             if (appview.CheckSearch())

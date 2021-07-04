@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fooddelivery.Database;
 
 namespace fooddelivery.Migrations
 {
     [DbContext(typeof(FoodDeliveryContext))]
-    partial class FoodDeliveryContextModelSnapshot : ModelSnapshot
+    [Migration("20210704182004_fooddeliveryV2")]
+    partial class fooddeliveryV2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,14 +47,14 @@ namespace fooddelivery.Migrations
                     b.Property<string>("Addon")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<ulong>("AddressTypeId")
+                    b.Property<string>("AddressType")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<ulong?>("AddressTypeId")
                         .HasColumnType("bigint unsigned");
 
                     b.Property<string>("City")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Neighborhood")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -74,9 +76,6 @@ namespace fooddelivery.Migrations
 
                     b.Property<double?>("Y_coordinate")
                         .HasColumnType("double");
-
-                    b.Property<bool>("isDeleted")
-                        .HasColumnType("tinyint(1)");
 
                     b.HasKey("Id");
 
@@ -578,19 +577,15 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("fooddelivery.Models.Address", b =>
                 {
-                    b.HasOne("fooddelivery.Models.AddressType", "AddressType")
+                    b.HasOne("fooddelivery.Models.AddressType", null)
                         .WithMany("Orders")
-                        .HasForeignKey("AddressTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AddressTypeId");
 
                     b.HasOne("fooddelivery.Models.Users.User", "User")
                         .WithMany("Addresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("AddressType");
 
                     b.Navigation("User");
                 });

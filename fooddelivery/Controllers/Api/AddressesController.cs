@@ -1,3 +1,4 @@
+using System;
 using System.Device.Location;
 using System.Threading.Tasks;
 using fooddelivery.Models;
@@ -15,10 +16,12 @@ namespace fooddelivery.Controllers.Api
     public class AddressesController : ControllerBase
     {
         private readonly IAddressService _addressService;
+        private readonly IOrderService _orderService;
 
-        public AddressesController(IAddressService addressService)
+        public AddressesController(IAddressService addressService, IOrderService orderService)
         {
             _addressService = addressService;
+            _orderService = orderService;
         }
 
         [HttpGet("{id}")]
@@ -64,8 +67,21 @@ namespace fooddelivery.Controllers.Api
             var obj = await _addressService.GetByKeyAsync(id);
             if (obj == null)
                 return NotFound("recurso não encontrado");
+            if (obj.isDeleted)
+                return NotFound("recurso não encontrado");
 
-            await _addressService.DeleteAsync(obj);
+            var orderQuantity = _orderService.GetAllByAddressIdAsync(id, new AppView()).Result.Count;
+
+            if (orderQuantity > 0)
+            {
+                obj.DeleteDate = DateTime.Now;
+                obj.isDeleted = true;
+                await _addressService.UpdateAsync(obj);
+            }
+            else
+            {
+                await _addressService.DeleteAsync(obj);
+            }
             return Ok($"codigo {id} removido");
         }
 
@@ -78,12 +94,16 @@ namespace fooddelivery.Controllers.Api
             if (obj == null)
                 return NotFound();
 
+            if (obj.isDeleted)
+                return BadRequest("Não é possível atualizar esse endereço, pois ele já foi logicamente deletado");
+
             if (address == null)
                 return BadRequest();
 
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
-            
+
+
             await _addressService.UpdateAsync(address);
             return Ok(address);
         }
@@ -94,10 +114,10 @@ namespace fooddelivery.Controllers.Api
             var address_01 = await _addressService.GetByKeyAsync(AddressId_01);
             var address_02 = await _addressService.GetByKeyAsync(AddressId_02);
 
-            if(address_01 == null || address_02 == null)
+            if (address_01 == null || address_02 == null)
                 return NotFound("Endereços não encontrados");
 
-            if(!address_01.X_coordinate.HasValue || !address_01.Y_coordinate.HasValue 
+            if (!address_01.X_coordinate.HasValue || !address_01.Y_coordinate.HasValue
             || !address_02.X_coordinate.HasValue || !address_02.Y_coordinate.HasValue)
                 return BadRequest("Falha na operação, os endereços informados não possuem coordenadas");
 

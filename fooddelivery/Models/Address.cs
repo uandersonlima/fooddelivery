@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using fooddelivery.Models.Users;
@@ -15,14 +16,21 @@ namespace fooddelivery.Models
         public string Addon { get; set; }
         public bool Standard { get; set; }
 
-        public string AddressType { get; set; }
+
+        public bool isDeleted { get; set; }
+        public DateTime? DeleteDate { get; set; }
+
+        public ulong AddressTypeId { get; set; }
+        public AddressType AddressType { get; set; }
 
 
-        public double? X_coordinate {get; set;}
-        public double? Y_coordinate {get; set;}
 
-        
-       
+
+        public double? X_coordinate { get; set; }
+        public double? Y_coordinate { get; set; }
+
+
+
         [Required, ForeignKey("User")]
         public ulong UserId { get; set; }
         public virtual User User { get; set; }
