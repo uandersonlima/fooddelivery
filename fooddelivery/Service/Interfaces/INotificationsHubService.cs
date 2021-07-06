@@ -14,7 +14,7 @@ namespace fooddelivery.Service.Interfaces
                                     List<Order> orders = null);
         Task ReportFeedbacksUpdatesAsync(string title = null, Feedbacks feedbacks = null);
         
-        Task UserIsConnectedAsync(string id);
-        Task UserIsDisconnectedAsync(string id);
+        Task UserIsConnectedAsync(ulong id);
+        Task UserIsDisconnectedAsync(ulong id);
     }
 }

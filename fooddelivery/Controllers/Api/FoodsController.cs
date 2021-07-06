@@ -20,8 +20,7 @@ namespace fooddelivery.Controllers.Api
             _foodService = foodService;
         }
 
-        [HttpGet("{id}")]
-        [Authorize(Policy = Policy.EmailVerified)]
+        [HttpGet("{id}"), AllowAnonymous]
         public async Task<IActionResult> Get(ulong id)
         {
             var result = await _foodService.GetByKeyAsync(id);

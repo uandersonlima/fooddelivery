@@ -8,7 +8,9 @@ namespace fooddelivery.Models
         [Key]
         public ulong Id { get; set; }
         public string Name { get; set; }
+        public string Type { get; set; }
         public byte[] Data { get; set; }
+        public string Size { get; set; }
 
         [ForeignKey("Food")]
         public ulong FoodId { get; set; }

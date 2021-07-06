@@ -33,17 +33,19 @@ namespace fooddelivery.Controllers.Api
             var results = await _imageService.GetAllAsync(appview, x => x.Name.Contains(appview.Search));
             return Ok(results);
         }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Image image)
         {
             if (image == null)
-                return BadRequest();
+                return BadRequest("imagem inválida");
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
             await _imageService.AddAsync(image);
             return Ok(image);
         }
+
         [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery] ulong id)
         {
@@ -54,6 +56,7 @@ namespace fooddelivery.Controllers.Api
             await _imageService.DeleteAsync(obj);
             return Ok($"codigo {id} removido");
         }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(ulong id, [FromBody] Image image)
         {
