@@ -19,6 +19,13 @@ namespace fooddelivery.Repository.Repositories
             _context = context;
             _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
+        public override async Task<Food> GetByKeyAsync(ulong id)
+        {
+            return await _context.Foods
+            .Include(food => food.Images)
+            .Include(food => food.FoodIngredients)
+            .FirstOrDefaultAsync(food => food.Id == id);
+        }
         public override async Task<PaginationList<Food>> GetAllAsync(AppView appview, Expression<Func<Food, bool>> predicate)
         {
             var pagList = new PaginationList<Food>();
