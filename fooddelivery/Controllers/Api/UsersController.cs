@@ -65,7 +65,7 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpPost("confirmEmail"), AllowAnonymous]
-        public async Task<IActionResult> ConfirmEmail([FromBody] string clientKey)
+        public async Task<IActionResult> ConfirmEmail([FromBody] ClientKeyDTO clientKeyDto)
         {
             //A partir do teu authorization recupera o usuário logado.
             var loggedInUser = await _authService.GetLoggedUserAsync();
@@ -75,10 +75,10 @@ namespace fooddelivery.Controllers.Api
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
-            if (string.IsNullOrEmpty(clientKey))
+            if (string.IsNullOrEmpty(clientKeyDto.ClientKey))
                 return BadRequest("forneça os dados esperados");
 
-            var serverKey = await _keyService.SearchKeyAsync(loggedInUser.Email, clientKey, KeyType.Verification);
+            var serverKey = await _keyService.SearchKeyAsync(loggedInUser.Email, clientKeyDto.ClientKey, KeyType.Verification);
 
             if (serverKey is null)
                 return NotFound("chave correspondente ao email não encontrada");
