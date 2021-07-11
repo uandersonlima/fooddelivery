@@ -34,7 +34,7 @@ namespace fooddelivery.Controllers.Api
             return Ok(results);
         }
 
-        [HttpPost]
+        [HttpPost, RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Create([FromBody] Image image)
         {
             if (image == null)
@@ -57,7 +57,7 @@ namespace fooddelivery.Controllers.Api
             return Ok($"codigo {id} removido");
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Update(ulong id, [FromBody] Image image)
         {
             var obj = await _imageService.GetByKeyAsync(id);

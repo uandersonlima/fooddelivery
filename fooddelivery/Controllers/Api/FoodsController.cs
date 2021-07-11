@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using fooddelivery.Models;
 using fooddelivery.Models.Constants;
 using fooddelivery.Models.Helpers;
+using fooddelivery.Repository.Interfaces;
 using fooddelivery.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -40,6 +41,7 @@ namespace fooddelivery.Controllers.Api
             var results = await _foodService.GetAllAsync(appview, x => x.Name.Contains(appview.Search));
             return Ok(results);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Food food)

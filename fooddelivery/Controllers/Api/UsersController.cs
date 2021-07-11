@@ -120,7 +120,7 @@ namespace fooddelivery.Controllers.Api
                         _15min.Subtract(elapsedTime).ToString(@"mm\:ss"));
                 return BadRequest(msg);
             }
-            await _keyService.CreateNewKeyAsync(serverUser, KeyType.Verification);
+            await _keyService.CreateNewKeyAsync(serverUser, KeyType.Recovery);
 
             return Ok();
         }
@@ -172,9 +172,9 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
+        public async Task<IActionResult> Get(ulong id)
         {
-            if (string.IsNullOrEmpty(id))
+            if (id == 0)
                 return NoContent();
             var user = await _userService.GetUserByIdAsync(id);
 
@@ -223,9 +223,9 @@ namespace fooddelivery.Controllers.Api
 
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(ulong id)
         {
-            if (string.IsNullOrEmpty(id))
+            if (id == 0)
                 return NoContent();
 
             var user = await _userService.GetUserByIdAsync(id);

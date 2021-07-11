@@ -75,9 +75,9 @@ namespace fooddelivery.Repository.Repositories
             return await _userManager.GeneratePasswordResetTokenAsync(user);
         }
 
-        public async Task<User> GetUserByIdAsync(string id)
+        public async Task<User> GetUserByIdAsync(ulong id)
         {
-            return await _userManager.FindByIdAsync(id);
+            return await _userManager.Users.FirstOrDefaultAsync(user => user.Id == id);
         }
 
         public async Task<User> GetUserByEmailAsync(string email)

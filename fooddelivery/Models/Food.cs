@@ -16,15 +16,15 @@ namespace fooddelivery.Models
         [Required]
         [Column(TypeName = "decimal(10, 2)")]
         public decimal Price { get; set; }
-        
+        public bool IsAppetizer { get; set; }
         public bool Available { get; set; }
 
         public ulong CategoryId { get; set; }
-        public Category Category { get; set; }   
-         
+        public Category Category { get; set; }
+
 
         public List<Suborder> Suborders { get; set; }
         public List<Image> Images { get; set; }
-	    public List<FoodIngredients> FoodIngredients{ get; set; }
+        public List<FoodIngredients> FoodIngredients { get; set; }
     }
 }

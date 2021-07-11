@@ -35,7 +35,7 @@ namespace fooddelivery
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseKestrel()
+                    webBuilder.UseKestrel(option => option.Limits.MaxRequestBodySize = 2_000_000)
                     .UseContentRoot(Directory.GetCurrentDirectory())
                     .UseIISIntegration()
                     .UseStartup<Startup>();

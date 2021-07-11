@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using fooddelivery.Models;
+using fooddelivery.Models.DTO;
 using fooddelivery.Models.Users;
 
 namespace fooddelivery.Service.Interfaces
@@ -7,7 +7,7 @@ namespace fooddelivery.Service.Interfaces
     public interface IAuthService
     {
         Task<User> GetLoggedUserAsync();
-        Task<string> CreateTokenAsync(User user);
+        Task<TokenDTO> CreateTokenAsync(User user);
     }
     
 }

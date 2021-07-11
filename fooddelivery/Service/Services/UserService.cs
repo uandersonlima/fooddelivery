@@ -34,7 +34,7 @@ namespace fooddelivery.Service.Services
             return await _userRepository.CheckPasswordAsync(user, password);
         }
 
-        public async Task<StringBuilder> DeleteAsync(string id)
+        public async Task<StringBuilder> DeleteAsync(ulong id)
         {
             return await DeleteAsync(await GetUserByIdAsync(id));
         }
@@ -59,7 +59,7 @@ namespace fooddelivery.Service.Services
             return await _userRepository.GetUserByEmailAsync(email);
         }
 
-        public async Task<User> GetUserByIdAsync(string id)
+        public async Task<User> GetUserByIdAsync(ulong id)
         {
             return await _userRepository.GetUserByIdAsync(id);
         }

@@ -31,6 +31,7 @@ namespace fooddelivery.Repository.Repositories
             var pagList = new PaginationList<Food>();
             var result = _context.Set<Food>()
                                  .Include(food => food.Images)
+                                 .Include(food => food.Suborders)
                                  .Include(food => food.FoodIngredients)
                                  .AsNoTracking().AsQueryable();
 
@@ -39,6 +40,7 @@ namespace fooddelivery.Repository.Repositories
             {
                 result = result.Where(predicate);
             }
+
             if (appview.CheckPagination())
             {
                 var totalRecords = await result.CountAsync();
@@ -54,9 +56,13 @@ namespace fooddelivery.Repository.Repositories
 
                 pagList.Pagination = pagination;
             }
-            pagList.AddRange(await result.ToListAsync());
+
+            var list = await result.OrderByDescending(food => food.Suborders.Count()).ToListAsync();
+            list.ForEach(food => food.Suborders = null);
+            pagList.AddRange(list);
             return pagList;
         }
+
         public async Task<PaginationList<Food>> GetByCategoryIdAsync(ulong categoryId, AppView appview)
         {
             var pagList = new PaginationList<Food>();

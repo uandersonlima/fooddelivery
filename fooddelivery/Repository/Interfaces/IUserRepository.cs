@@ -14,7 +14,7 @@ namespace fooddelivery.Repository.Interfaces
         Task<bool> CheckPasswordAsync (User user, string password);
         Task<StringBuilder> DeleteAsync(User user);
         Task<string> GeneratePasswordResetTokenAsync(User user);
-        Task<User> GetUserByIdAsync(string id);
+        Task<User> GetUserByIdAsync(ulong id);
         Task<User> GetUserByEmailAsync(string email);
         Task<List<User>> GetAllAsync(AppView appview);
         Task<StringBuilder> ResetPasswordAsync(User user, string token, string newPassword);

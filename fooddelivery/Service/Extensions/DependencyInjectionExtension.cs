@@ -1,6 +1,5 @@
 using System;
 using fooddelivery.Database;
-using fooddelivery.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +15,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
 using System.Text;
-using Google.Apis.Auth.AspNetCore3;
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using fooddelivery.Models.Helpers;
 using fooddelivery.Models.DTO;
 using fooddelivery.Models.Constants;
@@ -145,6 +142,7 @@ namespace fooddelivery.Service.Extensions
             svc.AddScoped<IPermissionsService, PermissionsService>();
             svc.AddScoped<IOrderService, OrderService>();
             svc.AddScoped<ISuborderService, SuborderService>();
+            svc.AddScoped<ITokenJWTService, TokenJWTService>();
             svc.AddScoped<IUserService, UserService>();
             //Repositories
             svc.AddScoped<IAddressRepository, AddressRepository>();
@@ -160,6 +158,7 @@ namespace fooddelivery.Service.Extensions
             svc.AddScoped<IKeyRepository, KeyRepository>();
             svc.AddScoped<IOrderRepository, OrderRepository>();
             svc.AddScoped<ISuborderRepository, SuborderRepository>();
+            svc.AddScoped<ITokenJWTRepository, TokenJWTRepository>();
             svc.AddScoped<IUserRepository, UserRepository>();
 
             //Authorizations

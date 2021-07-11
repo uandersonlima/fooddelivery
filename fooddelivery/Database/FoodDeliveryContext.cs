@@ -27,7 +27,9 @@ namespace fooddelivery.Database
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Suborder> Suborders { get; set; }
-
+        public DbSet<TokenJWT> TokensJWT { get; set; }
+        
+        
         //Contracts
         public DbSet<Additional> Additional { get; set; }
         public DbSet<Feedbacks> Feedbacks { get; set; }

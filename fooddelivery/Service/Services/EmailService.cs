@@ -1,4 +1,6 @@
 using System.Threading.Tasks;
+using fooddelivery.Libraries.Template;
+using fooddelivery.Models.Constants;
 using fooddelivery.Models.Helpers;
 using fooddelivery.Models.Users;
 using fooddelivery.Service.Interfaces;
@@ -25,10 +27,20 @@ namespace fooddelivery.Service.Services
         {
 
             var email = new MimeMessage();
+            string text = EmailTemplate.EmailPage(
+                nome: user.Name,
+                key: key,
+                type: KeyType.Recovery,
+                contactLink: null
+            );
+
             email.From.Add(MailboxAddress.Parse(appsettings.SmtpUser));
             email.To.Add(MailboxAddress.Parse(user.Email));
             email.Subject = "Sushi Delivery - TecnoSystem - Email de Recuperação - " + user.Name;
-            email.Body = new TextPart(TextFormat.Html) { Text = "Seu código de recuperação é " + key + " <br> Se você não fez essa solicitação ignore essa mensagem"};
+            email.Body = new TextPart(TextFormat.Html)
+            {
+                Text = text
+            };
 
             // Send email
             using var smtp = new SmtpClient();
@@ -40,10 +52,20 @@ namespace fooddelivery.Service.Services
         public async Task SendEmailVerificationAsync(User user, string key)
         {
             var email = new MimeMessage();
+            string text = EmailTemplate.EmailPage(
+                nome: user.Name,
+                key: key,
+                type: KeyType.Verification,
+                contactLink: null
+            );
+
             email.From.Add(MailboxAddress.Parse(appsettings.SmtpUser));
             email.To.Add(MailboxAddress.Parse(user.Email));
             email.Subject = "Sushi Delivery - TecnoSystem - Email de verificação - " + user.Name;
-            email.Body = new TextPart(TextFormat.Html) { Text = "Seu código de ativacao é " + key + " <br> Se você não fez essa solicitação ignore essa mensagem"};
+            email.Body = new TextPart(TextFormat.Html)
+            {
+                Text = text
+            };
 
             // Send email
             using var smtp = new SmtpClient();
