@@ -16,9 +16,10 @@ namespace fooddelivery.Controllers.Api
         private readonly IPaymentTypeService _paymentService;
         private readonly IDeliveryStatusService _statusService;
 
-        public PreviouslyLoadedDataController(IAddressTypeService typeService, IDeliveryStatusService statusService)
+        public PreviouslyLoadedDataController(IAddressTypeService typeService, IPaymentTypeService paymentService, IDeliveryStatusService statusService)
         {
             _typeService = typeService;
+            _paymentService = paymentService;
             _statusService = statusService;
         }
 
