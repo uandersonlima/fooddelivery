@@ -1,3 +1,4 @@
+using System.IO;
 using fooddelivery.Database;
 using fooddelivery.Service.Extensions;
 using fooddelivery.Service.Services;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 
 namespace fooddelivery
@@ -37,6 +39,7 @@ namespace fooddelivery
             });
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseRouting();
             app.UseCors("WebPolicy");
             app.UseAuthentication();
