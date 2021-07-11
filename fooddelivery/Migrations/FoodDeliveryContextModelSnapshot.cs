@@ -99,6 +99,18 @@ namespace fooddelivery.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AddressTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1ul,
+                            Name = "Casa"
+                        },
+                        new
+                        {
+                            Id = 2ul,
+                            Name = "Trabalho"
+                        });
                 });
 
             modelBuilder.Entity("fooddelivery.Models.Category", b =>
@@ -113,6 +125,23 @@ namespace fooddelivery.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1ul,
+                            Name = "Pratos"
+                        },
+                        new
+                        {
+                            Id = 2ul,
+                            Name = "Sobremesas"
+                        },
+                        new
+                        {
+                            Id = 3ul,
+                            Name = "Bebidas"
+                        });
                 });
 
             modelBuilder.Entity("fooddelivery.Models.Change", b =>
@@ -242,6 +271,43 @@ namespace fooddelivery.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DeliveryStatus");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1ul,
+                            Name = "Aberto"
+                        },
+                        new
+                        {
+                            Id = 2ul,
+                            Name = "Em progresso"
+                        },
+                        new
+                        {
+                            Id = 3ul,
+                            Name = "Pronto"
+                        },
+                        new
+                        {
+                            Id = 4ul,
+                            Name = "Saiu para entrega"
+                        },
+                        new
+                        {
+                            Id = 5ul,
+                            Name = "Entregue"
+                        },
+                        new
+                        {
+                            Id = 6ul,
+                            Name = "Não entregue"
+                        },
+                        new
+                        {
+                            Id = 7ul,
+                            Name = "Cancelado"
+                        });
                 });
 
             modelBuilder.Entity("fooddelivery.Models.Food", b =>
@@ -336,6 +402,9 @@ namespace fooddelivery.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<ulong>("PaymentTypeId")
+                        .HasColumnType("bigint unsigned");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10,2)");
 
@@ -351,9 +420,37 @@ namespace fooddelivery.Migrations
 
                     b.HasIndex("DeliveryStatusId");
 
+                    b.HasIndex("PaymentTypeId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("fooddelivery.Models.PaymentType", b =>
+                {
+                    b.Property<ulong>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint unsigned");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1ul,
+                            Name = "Dinheiro"
+                        },
+                        new
+                        {
+                            Id = 2ul,
+                            Name = "Cartão"
+                        });
                 });
 
             modelBuilder.Entity("fooddelivery.Models.Suborder", b =>
@@ -761,6 +858,12 @@ namespace fooddelivery.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("fooddelivery.Models.PaymentType", "PaymentType")
+                        .WithMany("Orders")
+                        .HasForeignKey("PaymentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("fooddelivery.Models.Users.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -770,6 +873,8 @@ namespace fooddelivery.Migrations
                     b.Navigation("Address");
 
                     b.Navigation("DeliveryStatus");
+
+                    b.Navigation("PaymentType");
 
                     b.Navigation("User");
                 });
@@ -894,6 +999,11 @@ namespace fooddelivery.Migrations
                     b.Navigation("Feedbacks");
 
                     b.Navigation("Suborders");
+                });
+
+            modelBuilder.Entity("fooddelivery.Models.PaymentType", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("fooddelivery.Models.Suborder", b =>

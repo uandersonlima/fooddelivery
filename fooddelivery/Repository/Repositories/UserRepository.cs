@@ -10,16 +10,20 @@ using fooddelivery.Models.Users;
 using fooddelivery.Repository.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace fooddelivery.Repository.Repositories
 {
     public class UserRepository : IUserRepository
     {
+        private readonly EmailSettings _emailSettings;
         private readonly UserManager<User> _userManager;
-        public UserRepository(UserManager<User> userManager)
+        public UserRepository(IOptions<EmailSettings> emailSettings, UserManager<User> userManager)
         {
+            _emailSettings = emailSettings.Value;
             _userManager = userManager;
         }
+
         private StringBuilder GetErrors(IdentityResult response)
         {
             if (response.Succeeded)
@@ -41,7 +45,18 @@ namespace fooddelivery.Repository.Repositories
         {
             var response = await _userManager.CreateAsync(user, password);
             if (response.Succeeded)
-                await _userManager.AddClaimsAsync(user, new List<Claim> { new Claim(type: Policy.EmailVerified, value: false.ToString())});
+            {
+                if (user.Email == _emailSettings.SmtpUser)
+                {
+                    await _userManager.AddToRoleAsync(user, Policy.Admin);
+                    await _userManager.AddClaimsAsync(user, new List<Claim> { new Claim(type: Policy.EmailVerified, value: true.ToString()) });
+                }
+                else
+                {
+                    await _userManager.AddToRoleAsync(user, Policy.User);
+                    await _userManager.AddClaimsAsync(user, new List<Claim> { new Claim(type: Policy.EmailVerified, value: false.ToString()) });
+                }
+            }
             return GetErrors(response);
         }
 

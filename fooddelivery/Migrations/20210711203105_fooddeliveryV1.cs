@@ -77,6 +77,19 @@ namespace fooddelivery.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PaymentTypes",
+                columns: table => new
+                {
+                    Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
                 {
@@ -127,6 +140,8 @@ namespace fooddelivery.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    IsAppetizer = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Available = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     CategoryId = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                 },
                 constraints: table =>
@@ -173,11 +188,12 @@ namespace fooddelivery.Migrations
                     State = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     Addon = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     Standard = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    AddressType = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    isDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    DeleteDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    AddressTypeId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
                     X_coordinate = table.Column<double>(type: "double", nullable: true),
                     Y_coordinate = table.Column<double>(type: "double", nullable: true),
-                    UserId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
-                    AddressTypeId = table.Column<ulong>(type: "bigint unsigned", nullable: true)
+                    UserId = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -187,7 +203,7 @@ namespace fooddelivery.Migrations
                         column: x => x.AddressTypeId,
                         principalTable: "AddressTypes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Addresses_Users_UserId",
                         column: x => x.UserId,
@@ -283,6 +299,31 @@ namespace fooddelivery.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TokensJWT",
+                columns: table => new
+                {
+                    Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    RefreshToken = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    UserId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    Used = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    ExpirationToken = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ExpirationRefreshToken = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Updated = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TokensJWT", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TokensJWT_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserRoles",
                 columns: table => new
                 {
@@ -361,7 +402,9 @@ namespace fooddelivery.Migrations
                     Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Type = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     Data = table.Column<byte[]>(type: "longblob", nullable: true),
+                    Size = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     FoodId = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                 },
                 constraints: table =>
@@ -383,7 +426,9 @@ namespace fooddelivery.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Note = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    ShoppingTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     DeliveryStatusId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    PaymentTypeId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
                     AddressId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
                     UserId = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                 },
@@ -400,6 +445,12 @@ namespace fooddelivery.Migrations
                         name: "FK_Orders_DeliveryStatus_DeliveryStatusId",
                         column: x => x.DeliveryStatusId,
                         principalTable: "DeliveryStatus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_PaymentTypes_PaymentTypeId",
+                        column: x => x.PaymentTypeId,
+                        principalTable: "PaymentTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -493,6 +544,48 @@ namespace fooddelivery.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "AddressTypes",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1ul, "Casa" },
+                    { 2ul, "Trabalho" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1ul, "Pratos" },
+                    { 2ul, "Sobremesas" },
+                    { 3ul, "Bebidas" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "DeliveryStatus",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1ul, "Aberto" },
+                    { 2ul, "Em progresso" },
+                    { 3ul, "Pronto" },
+                    { 4ul, "Saiu para entrega" },
+                    { 5ul, "Entregue" },
+                    { 6ul, "Não entregue" },
+                    { 7ul, "Cancelado" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "PaymentTypes",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1ul, "Dinheiro" },
+                    { 2ul, "Cartão" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Additional_IngredientId",
                 table: "Additional",
@@ -564,6 +657,11 @@ namespace fooddelivery.Migrations
                 column: "DeliveryStatusId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_PaymentTypeId",
+                table: "Orders",
+                column: "PaymentTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
                 table: "Orders",
                 column: "UserId");
@@ -588,6 +686,11 @@ namespace fooddelivery.Migrations
                 name: "IX_Suborders_OrderId",
                 table: "Suborders",
                 column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TokensJWT_UserId",
+                table: "TokensJWT",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_RoleId",
@@ -639,6 +742,9 @@ namespace fooddelivery.Migrations
                 name: "Tokens");
 
             migrationBuilder.DropTable(
+                name: "TokensJWT");
+
+            migrationBuilder.DropTable(
                 name: "UserRoles");
 
             migrationBuilder.DropTable(
@@ -667,6 +773,9 @@ namespace fooddelivery.Migrations
 
             migrationBuilder.DropTable(
                 name: "DeliveryStatus");
+
+            migrationBuilder.DropTable(
+                name: "PaymentTypes");
 
             migrationBuilder.DropTable(
                 name: "AddressTypes");

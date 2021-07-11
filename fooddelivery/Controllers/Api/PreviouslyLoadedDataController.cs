@@ -13,6 +13,7 @@ namespace fooddelivery.Controllers.Api
     public class PreviouslyLoadedDataController : ControllerBase
     {
         private readonly IAddressTypeService _typeService;
+        private readonly IPaymentTypeService _paymentService;
         private readonly IDeliveryStatusService _statusService;
 
         public PreviouslyLoadedDataController(IAddressTypeService typeService, IDeliveryStatusService statusService)
@@ -25,6 +26,13 @@ namespace fooddelivery.Controllers.Api
         public async Task<IActionResult> GetDeliveryStatus()
         {
             var results = await _statusService.GetAllAsync(new AppView(), null);
+            return Ok(results);
+        }
+
+        [HttpGet("getPaymentType")]
+        public async Task<IActionResult> GetPaymentType()
+        {
+            var results = await _paymentService.GetAllAsync(new AppView(), null);
             return Ok(results);
         }
 

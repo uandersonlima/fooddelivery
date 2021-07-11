@@ -209,15 +209,23 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] User user)
+        public async Task<IActionResult> Update([FromBody] UserProfile ClientUser)
         {
+            var ServerUser = await _authService.GetLoggedUserAsync();
+            if(ServerUser.Id != ClientUser.Id)
+                return BadRequest("Usuário não pode atualizar esse perfil");
 
-            var errors = await _userService.UpdateAsync(user);
+            var DbUser = await _userService.GetUserByIdAsync(ClientUser.Id);
+
+            DbUser.Name = ClientUser.Name;
+            DbUser.PhoneNumber = ClientUser.PhoneNumber;
+
+            var errors = await _userService.UpdateAsync(DbUser);
 
             if (errors.Length != 0)
                 return UnprocessableEntity(errors.ToString());
             else
-                return Ok(user);
+                return Ok(DbUser);
         }
 
 

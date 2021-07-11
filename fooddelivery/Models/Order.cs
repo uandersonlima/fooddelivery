@@ -26,6 +26,11 @@ namespace fooddelivery.Models
         public DeliveryStatus DeliveryStatus { get; set; }
 
 
+        [ForeignKey("PaymentType")]
+        public ulong PaymentTypeId { get; set; }
+        public PaymentType PaymentType { get; set; }
+
+
 
         [ForeignKey("Address")]
         public ulong AddressId { get; set; }

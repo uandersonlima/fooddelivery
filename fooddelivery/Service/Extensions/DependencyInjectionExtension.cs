@@ -123,8 +123,6 @@ namespace fooddelivery.Service.Extensions
                 .AddEntityFrameworkStores<FoodDeliveryContext>()
                 .AddDefaultTokenProviders();
 
-            svc.AddScoped<SeedData>();
-
             //Services
             svc.AddScoped<IAuthService, AuthService>();
             svc.AddScoped<IAddressService, AddressService>();
@@ -141,6 +139,7 @@ namespace fooddelivery.Service.Extensions
             svc.AddScoped<IKeyService, KeyService>();
             svc.AddScoped<IPermissionsService, PermissionsService>();
             svc.AddScoped<IOrderService, OrderService>();
+            svc.AddScoped<IPaymentTypeService, PaymentTypeService>();
             svc.AddScoped<ISuborderService, SuborderService>();
             svc.AddScoped<ITokenJWTService, TokenJWTService>();
             svc.AddScoped<IUserService, UserService>();
@@ -157,6 +156,7 @@ namespace fooddelivery.Service.Extensions
             svc.AddScoped<IIngredientRepository, IngredientRepository>();
             svc.AddScoped<IKeyRepository, KeyRepository>();
             svc.AddScoped<IOrderRepository, OrderRepository>();
+            svc.AddScoped<IPaymentTypeRepository, PaymentTypeRepository>();
             svc.AddScoped<ISuborderRepository, SuborderRepository>();
             svc.AddScoped<ITokenJWTRepository, TokenJWTRepository>();
             svc.AddScoped<IUserRepository, UserRepository>();
@@ -203,8 +203,8 @@ namespace fooddelivery.Service.Extensions
             });
             svc.AddAuthorization(options =>
             {
-                options.AddPolicy(Policy.EmailVerified, policy =>
-                            policy.AddRequirements(new EmailVerifiedRequirement(true)));
+                options.AddPolicy(Policy.EmailVerified, policy => policy.AddRequirements(new EmailVerifiedRequirement(true)));
+                options.AddPolicy(Policy.Admin, policy =>  policy.RequireRole(Policy.Admin));
             });
             // svc
             //      .AddAuthentication(o =>

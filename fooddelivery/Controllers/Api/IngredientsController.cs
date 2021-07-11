@@ -35,6 +35,7 @@ namespace fooddelivery.Controllers.Api
         }
         
         [HttpPost]
+        [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Create([FromBody] Ingredient ingredient)
         {
             if (ingredient == null)
@@ -47,6 +48,7 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpDelete]
+        [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Delete([FromQuery] ulong id)
         {
             var obj = await _ingredientService.GetByKeyAsync(id);
@@ -58,6 +60,7 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Update(ulong id, [FromBody] Ingredient ingredient)
         {
             var obj = await _ingredientService.GetByKeyAsync(id);

@@ -16,11 +16,13 @@ namespace fooddelivery.Controllers.Api
     public class AddressesController : ControllerBase
     {
         private readonly IAddressService _addressService;
+        private readonly IAuthService _authService;
         private readonly IOrderService _orderService;
 
-        public AddressesController(IAddressService addressService, IOrderService orderService)
+        public AddressesController(IAddressService addressService, IAuthService authService, IOrderService orderService)
         {
             _addressService = addressService;
+            _authService = authService;
             _orderService = orderService;
         }
 
@@ -28,6 +30,16 @@ namespace fooddelivery.Controllers.Api
         public async Task<IActionResult> Get(ulong id)
         {
             var result = await _addressService.GetByKeyAsync(id);
+            if (result == null)
+                return NotFound();
+
+            var isAdmin = HttpContext.User.IsInRole(Policy.Admin);
+            var loggedInUser = await _authService.GetLoggedUserAsync();
+
+            if (!isAdmin || result.UserId != loggedInUser.Id)
+            {
+                return Unauthorized("Você não tem permissão para ver esse endereço");
+            }
             return Ok(result);
         }
 
@@ -35,10 +47,20 @@ namespace fooddelivery.Controllers.Api
         public async Task<IActionResult> GetAll(ulong userId, [FromQuery] AppView appview)
         {
             var results = await _addressService.GetAllByUserIdAsync(userId, appview);
+            if (results.Count > 0)
+            {
+                var isAdmin = HttpContext.User.IsInRole(Policy.Admin);
+                var loggedInUser = await _authService.GetLoggedUserAsync();
+                if (!isAdmin || results[0].UserId != loggedInUser.Id)
+                {
+                    return Unauthorized("Você não tem permissão para ver esse endereço");
+                }
+            }
             return Ok(results);
         }
 
         [HttpGet]
+        [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> GetAll([FromQuery] AppView appview)
         {
             var results = await _addressService.GetAllAsync(appview, x => x.City.Contains(appview.Search)

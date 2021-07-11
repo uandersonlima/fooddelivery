@@ -14,16 +14,28 @@ namespace fooddelivery.Controllers.Api
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
+        private readonly IAuthService _authService;
 
-        public OrdersController(IOrderService orderService)
+        public OrdersController(IOrderService orderService, IAuthService authService)
         {
             _orderService = orderService;
+            _authService = authService;
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(ulong id)
         {
             var result = await _orderService.GetByKeyAsync(id);
+            if (result == null)
+                return NotFound();
+
+            var isAdmin = HttpContext.User.IsInRole(Policy.Admin);
+            var loggedInUser = await _authService.GetLoggedUserAsync();
+
+            if (!isAdmin || result.UserId != loggedInUser.Id)
+            {
+                return Unauthorized("Você não tem permissão para ver esse endereço");
+            }
             return Ok(result);
         }
 
@@ -31,10 +43,21 @@ namespace fooddelivery.Controllers.Api
         public async Task<IActionResult> GetAll(ulong userId, [FromQuery] AppView appview)
         {
             var results = await _orderService.GetAllByUserIdAsync(userId, appview);
+            if (results.Count > 0)
+            {
+                var isAdmin = HttpContext.User.IsInRole(Policy.Admin);
+                var loggedInUser = await _authService.GetLoggedUserAsync();
+
+                if (!isAdmin || results[0].UserId != loggedInUser.Id)
+                {
+                    return Unauthorized("Você não tem permissão para ver esse endereço");
+                }
+            }
             return Ok(results);
         }
 
         [HttpGet]
+        [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> GetAll([FromQuery] AppView appview)
         {
             var results = await _orderService.GetAllAsync(appview, null);
@@ -52,8 +75,9 @@ namespace fooddelivery.Controllers.Api
             await _orderService.AddAsync(order);
             return Ok(order);
         }
-        
+
         [HttpDelete]
+        [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Delete([FromQuery] ulong id)
         {
             var obj = await _orderService.GetByKeyAsync(id);
@@ -66,6 +90,7 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Update(ulong id, [FromBody] Order order)
         {
             var obj = await _orderService.GetByKeyAsync(id);

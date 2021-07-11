@@ -35,6 +35,7 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpPost, RequestSizeLimit(100_000_000)]
+        [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Create([FromBody] Image image)
         {
             if (image == null)
@@ -47,6 +48,7 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpDelete]
+        [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Delete([FromQuery] ulong id)
         {
             var obj = await _imageService.GetByKeyAsync(id);
@@ -58,6 +60,7 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpPut("{id}"), RequestSizeLimit(100_000_000)]
+        [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Update(ulong id, [FromBody] Image image)
         {
             var obj = await _imageService.GetByKeyAsync(id);

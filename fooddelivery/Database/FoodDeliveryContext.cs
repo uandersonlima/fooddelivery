@@ -26,10 +26,11 @@ namespace fooddelivery.Database
         public DbSet<Image> Images { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<PaymentType> PaymentTypes { get; set; }
         public DbSet<Suborder> Suborders { get; set; }
         public DbSet<TokenJWT> TokensJWT { get; set; }
-        
-        
+
+
         //Contracts
         public DbSet<Additional> Additional { get; set; }
         public DbSet<Feedbacks> Feedbacks { get; set; }
@@ -58,6 +59,34 @@ namespace fooddelivery.Database
                     new { pk.UserId, pk.OrderId });
             modelBuilder.Entity<FoodIngredients>().HasKey(pk =>
                     new { pk.FoodId, pk.IngredientId });
+
+
+            modelBuilder.Entity<AddressType>().HasData(
+                    new AddressType { Id = 1, Name = "Casa" },
+                    new AddressType { Id = 2, Name = "Trabalho" }
+            );
+
+            modelBuilder.Entity<Category>().HasData(
+                    new Category { Id = 1, Name = "Pratos" },
+                    new Category { Id = 2, Name = "Sobremesas" },
+                    new Category { Id = 3, Name = "Bebidas" }
+            );
+
+            modelBuilder.Entity<DeliveryStatus>().HasData(
+                    new DeliveryStatus { Id = 1, Name = "Aberto" },
+                    new DeliveryStatus { Id = 2, Name = "Em progresso" },
+                    new DeliveryStatus { Id = 3, Name = "Pronto" },
+                    new DeliveryStatus { Id = 4, Name = "Saiu para entrega" },
+                    new DeliveryStatus { Id = 5, Name = "Entregue" },
+                    new DeliveryStatus { Id = 6, Name = "Não entregue" },
+                    new DeliveryStatus { Id = 7, Name = "Cancelado" }
+            );
+
+            modelBuilder.Entity<PaymentType>().HasData(
+                    new PaymentType { Id = 1, Name = "Dinheiro" },
+                    new PaymentType { Id = 2, Name = "Cartão" }
+            );
+
         }
     }
 }

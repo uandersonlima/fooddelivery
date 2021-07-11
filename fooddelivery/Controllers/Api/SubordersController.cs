@@ -28,11 +28,13 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpGet]
+        [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> GetAll([FromQuery] AppView appview)
         {
             var results = await _suborderService.GetAllAsync(appview, null);
             return Ok(results);
         }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Suborder suborder)
         {
@@ -44,6 +46,7 @@ namespace fooddelivery.Controllers.Api
             await _suborderService.AddAsync(suborder);
             return Ok(suborder);
         }
+
         [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery] ulong id)
         {
@@ -54,6 +57,7 @@ namespace fooddelivery.Controllers.Api
             await _suborderService.DeleteAsync(obj);
             return Ok($"codigo {id} removido");
         }
+        
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(ulong id, [FromBody] Suborder suborder)
         {

@@ -35,7 +35,9 @@ namespace fooddelivery.Controllers.Api
             var results = await _categoryService.GetAllAsync(appview, x => x.Name.Contains(appview.Search));
             return Ok(results);
         }
+
         [HttpPost]
+        [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Create([FromBody] Category category)
         {
             if (category == null)
@@ -46,7 +48,9 @@ namespace fooddelivery.Controllers.Api
             await _categoryService.AddAsync(category);
             return Ok(category);
         }
+
         [HttpDelete]
+        [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Delete([FromQuery] ulong id)
         {
 
@@ -59,7 +63,9 @@ namespace fooddelivery.Controllers.Api
             
             return Ok($"codigo {id} removido");
         }
+
         [HttpPut ("{id}")]
+        [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Update(ulong id, [FromBody] Category category)
         {
             var obj = await _categoryService.GetByKeyAsync(id);
