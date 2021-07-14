@@ -203,8 +203,10 @@ namespace fooddelivery.Service.Extensions
             });
             svc.AddAuthorization(options =>
             {
-                options.AddPolicy(Policy.EmailVerified, policy => policy.AddRequirements(new EmailVerifiedRequirement(true)));
-                options.AddPolicy(Policy.Admin, policy =>  policy.RequireRole(Policy.Admin));
+                options.AddPolicy(Policy.EmailVerified, policy =>
+                                                        policy.RequireAssertion(context => 
+                                                                context.User.HasClaim(c => c.Value == Policy.EmailVerified || c.Value == Policy.Admin)));
+                options.AddPolicy(Policy.Admin, policy => policy.RequireRole(Policy.Admin));
             });
             // svc
             //      .AddAuthentication(o =>

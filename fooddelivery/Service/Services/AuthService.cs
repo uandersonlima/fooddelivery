@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -42,8 +43,11 @@ namespace fooddelivery.Service.Services
             var encryptedSecretKey = Encoding.ASCII.GetBytes(secretKey);
 
             var claims = await _userManager.GetClaimsAsync(user);
+            var roles = new List<string>(await _userManager.GetRolesAsync(user));
+            roles.ForEach(role => claims.Add(new Claim(ClaimTypes.Role, role)));
             claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
             claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()));
+
 
             var exp = DateTime.UtcNow.AddHours(2);
             var sign = new SigningCredentials(new SymmetricSecurityKey(encryptedSecretKey), SecurityAlgorithms.HmacSha256Signature);

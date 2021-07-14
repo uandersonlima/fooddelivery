@@ -36,7 +36,7 @@ namespace fooddelivery.Controllers.Api
             var isAdmin = HttpContext.User.IsInRole(Policy.Admin);
             var loggedInUser = await _authService.GetLoggedUserAsync();
 
-            if (!isAdmin || result.UserId != loggedInUser.Id)
+            if (!isAdmin && result.UserId != loggedInUser.Id)
             {
                 return Unauthorized("Você não tem permissão para ver esse endereço");
             }
@@ -51,7 +51,7 @@ namespace fooddelivery.Controllers.Api
             {
                 var isAdmin = HttpContext.User.IsInRole(Policy.Admin);
                 var loggedInUser = await _authService.GetLoggedUserAsync();
-                if (!isAdmin || results[0].UserId != loggedInUser.Id)
+                if (!isAdmin && results[0].UserId != loggedInUser.Id)
                 {
                     return Unauthorized("Você não tem permissão para ver esse endereço");
                 }
@@ -64,8 +64,8 @@ namespace fooddelivery.Controllers.Api
         public async Task<IActionResult> GetAll([FromQuery] AppView appview)
         {
             var results = await _addressService.GetAllAsync(appview, x => x.City.Contains(appview.Search)
-                                                                       || x.Neighborhood.Contains(appview.Search)
-                                                                       || x.State.Contains(appview.Search));
+                                                                       && x.Neighborhood.Contains(appview.Search)
+                                                                       && x.State.Contains(appview.Search));
 
             return Ok(results);
         }
@@ -87,6 +87,7 @@ namespace fooddelivery.Controllers.Api
         public async Task<IActionResult> Delete([FromQuery] ulong id)
         {
             var obj = await _addressService.GetByKeyAsync(id);
+           
             if (obj == null)
                 return NotFound("recurso não encontrado");
             if (obj.isDeleted)
@@ -136,11 +137,11 @@ namespace fooddelivery.Controllers.Api
             var address_01 = await _addressService.GetByKeyAsync(AddressId_01);
             var address_02 = await _addressService.GetByKeyAsync(AddressId_02);
 
-            if (address_01 == null || address_02 == null)
+            if (address_01 == null && address_02 == null)
                 return NotFound("Endereços não encontrados");
 
-            if (!address_01.X_coordinate.HasValue || !address_01.Y_coordinate.HasValue
-            || !address_02.X_coordinate.HasValue || !address_02.Y_coordinate.HasValue)
+            if (!address_01.X_coordinate.HasValue && !address_01.Y_coordinate.HasValue
+            && !address_02.X_coordinate.HasValue && !address_02.Y_coordinate.HasValue)
                 return BadRequest("Falha na operação, os endereços informados não possuem coordenadas");
 
             var location_01 = new GeoCoordinate(address_01.X_coordinate.Value, address_01.Y_coordinate.Value);

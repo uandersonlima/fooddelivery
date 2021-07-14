@@ -110,7 +110,7 @@ namespace fooddelivery.Controllers.Api
             if (serverUser == null)
                 return NotFound("user not found");
 
-            var serverkey = new AccessKey { Email = email.EmailAddress, KeyType = KeyType.Verification };
+            var serverkey = new AccessKey { Email = email.EmailAddress, KeyType = KeyType.Recovery };
             var elapsedTime = await _keyService.ElapsedTimeAsync(serverkey);
             var _15min = new TimeSpan(0, 15, 0);
 

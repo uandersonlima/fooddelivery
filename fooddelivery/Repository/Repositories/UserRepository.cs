@@ -18,6 +18,7 @@ namespace fooddelivery.Repository.Repositories
     {
         private readonly EmailSettings _emailSettings;
         private readonly UserManager<User> _userManager;
+
         public UserRepository(IOptions<EmailSettings> emailSettings, UserManager<User> userManager)
         {
             _emailSettings = emailSettings.Value;
@@ -53,7 +54,7 @@ namespace fooddelivery.Repository.Repositories
                 }
                 else
                 {
-                    await _userManager.AddToRoleAsync(user, Policy.User);
+                    await _userManager.AddToRoleAsync(user, Policy.Common);
                     await _userManager.AddClaimsAsync(user, new List<Claim> { new Claim(type: Policy.EmailVerified, value: false.ToString()) });
                 }
             }

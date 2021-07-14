@@ -35,7 +35,7 @@ namespace fooddelivery.Controllers.Api
             var isAdmin = HttpContext.User.IsInRole(Policy.Admin);
             var loggedInUser = await _authService.GetLoggedUserAsync();
 
-            if (!isAdmin || result.UserId != loggedInUser.Id)
+            if (!isAdmin && result.UserId != loggedInUser.Id)
             {
                 return Unauthorized("Você não tem permissão para ver esse endereço");
             }
@@ -52,7 +52,7 @@ namespace fooddelivery.Controllers.Api
             {
                 var isAdmin = HttpContext.User.IsInRole(Policy.Admin);
                 var loggedInUser = await _authService.GetLoggedUserAsync();
-                if (!isAdmin || results[0].UserId != loggedInUser.Id)
+                if (!isAdmin && results[0].UserId != loggedInUser.Id)
                 {
                     return Unauthorized("Você não tem permissão para ver esse endereço");
                 }
