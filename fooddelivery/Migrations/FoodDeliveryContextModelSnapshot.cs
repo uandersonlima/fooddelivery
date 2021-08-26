@@ -544,13 +544,13 @@ namespace fooddelivery.Migrations
                         new
                         {
                             Id = 1ul,
-                            ConcurrencyStamp = "81b41a25-66d2-4ddc-acb1-4a5edd7c4711",
+                            ConcurrencyStamp = "762a5ba2-b79c-4337-849f-7c0880593aed",
                             Name = "Administrator"
                         },
                         new
                         {
                             Id = 2ul,
-                            ConcurrencyStamp = "d8b1665e-16ad-4405-bbbe-e3489c3d9bb5",
+                            ConcurrencyStamp = "3acc3d66-94a0-48ab-8b72-8c4f3764c389",
                             Name = "Common"
                         });
                 });

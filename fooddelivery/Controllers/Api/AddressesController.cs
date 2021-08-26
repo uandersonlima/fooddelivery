@@ -84,6 +84,7 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpDelete]
+        [AllowAnonymous]
         public async Task<IActionResult> Delete([FromQuery] ulong id)
         {
             var obj = await _addressService.GetByKeyAsync(id);
@@ -93,9 +94,9 @@ namespace fooddelivery.Controllers.Api
             if (obj.isDeleted)
                 return NotFound("recurso não encontrado");
 
-            var orderQuantity = _orderService.GetAllByAddressIdAsync(id, new AppView()).Result.Count;
+            var orderQuantity = await _orderService.GetAllByAddressIdAsync(id, new AppView());
 
-            if (orderQuantity > 0)
+            if (orderQuantity.Count > 0)
             {
                 obj.DeleteDate = DateTime.Now;
                 obj.isDeleted = true;

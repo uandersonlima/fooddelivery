@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace fooddelivery.Migrations
 {
-    public partial class fooddeliveryV1 : Migration
+    public partial class Foodv1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -584,6 +584,15 @@ namespace fooddelivery.Migrations
                 {
                     { 1ul, "Dinheiro" },
                     { 2ul, "Cartão" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { 1ul, "762a5ba2-b79c-4337-849f-7c0880593aed", "Administrator", null },
+                    { 2ul, "3acc3d66-94a0-48ab-8b72-8c4f3764c389", "Common", null }
                 });
 
             migrationBuilder.CreateIndex(

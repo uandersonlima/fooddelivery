@@ -54,7 +54,7 @@ namespace fooddelivery.Repository.Repositories
                 }
                 else
                 {
-                    await _userManager.AddToRoleAsync(user, Policy.Common);
+                    var resp = await _userManager.AddToRoleAsync(user, Policy.Common);
                     await _userManager.AddClaimsAsync(user, new List<Claim> { new Claim(type: Policy.EmailVerified, value: false.ToString()) });
                 }
             }

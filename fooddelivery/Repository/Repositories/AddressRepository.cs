@@ -16,7 +16,7 @@ namespace fooddelivery.Repository.Repositories
         public AddressRepository(FoodDeliveryContext context) : base(context)
         {
             _context = context;
-            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            //_context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public async Task<PaginationList<Address>> GetAllByUserIdAsync(ulong userId, AppView appview)

@@ -17,7 +17,7 @@ namespace fooddelivery.Repository.Repositories
         public OrderRepository(FoodDeliveryContext context) : base(context)
         {
             _context = context;
-            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            //_context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public override async Task<PaginationList<Order>> GetAllAsync(AppView appview, Expression<Func<Order, bool>> predicate)
@@ -89,8 +89,6 @@ namespace fooddelivery.Repository.Repositories
         {
             var pagList = new PaginationList<Order>();
             var result = _context.Orders.Where(order => order.AddressId == addressId)
-                                        .Include(order => order.Suborders)
-                                        .ThenInclude(sub => sub.Order)
                                         .AsNoTracking().AsQueryable();
 
             if (appview.CheckSearch())
