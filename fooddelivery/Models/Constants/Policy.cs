@@ -5,6 +5,5 @@ namespace fooddelivery.Models.Constants
         public const string EmailVerified = "EmailVerified";
         public const string Admin = "Administrator";
         public const string Common = "Common";
-
     }
 }

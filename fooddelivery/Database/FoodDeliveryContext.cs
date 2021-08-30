@@ -88,8 +88,8 @@ namespace fooddelivery.Database
             );
 
             modelBuilder.Entity<Role>().HasData(
-                    new Role { Id = 1, Name = "Administrator" },
-                    new Role { Id = 2, Name = "Common" }
+                    new Role { Id = 1, Name = "Administrator", NormalizedName = "Administrator"},
+                    new Role { Id = 2, Name = "Common", NormalizedName = "Common" }
             );
 
         }
