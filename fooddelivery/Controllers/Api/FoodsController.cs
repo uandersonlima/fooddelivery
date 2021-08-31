@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using fooddelivery.Models;
 using fooddelivery.Models.Constants;
+using fooddelivery.Models.Contracts;
 using fooddelivery.Models.Helpers;
 using fooddelivery.Repository.Interfaces;
 using fooddelivery.Service.Interfaces;
@@ -88,5 +89,52 @@ namespace fooddelivery.Controllers.Api
             return Ok(food);
         }
 
+        [HttpPut("addingredient/{id}")]
+        [Authorize(Policy = Policy.Admin)]
+        public async Task<IActionResult> AddIngredient(ulong id, [FromBody] ulong ingredientId, [FromServices] IIngredientService _ingredientService)
+        {
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
+            var food = await _foodService.GetByKeyAsync(id);
+            if (food == null)
+                return NotFound();
+            
+            var ingredient = await _ingredientService.GetByKeyAsync(ingredientId);
+            if(ingredient == null) 
+                return NotFound();
+
+            if (ingredientId == 0)
+                return BadRequest();
+
+            food.AddIngredient(ingredientId);
+
+            await _foodService.UpdateAsync(food);
+            return Ok(food);
+        }
+
+        [HttpPut("removeingredient/{id}")]
+        [Authorize(Policy = Policy.Admin)]
+        public async Task<IActionResult> RemoveIngredient(ulong id, [FromBody] ulong ingredientId, [FromServices] IIngredientService _ingredientService)
+        {
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
+            var food = await _foodService.GetByKeyAsync(id);
+            if (food == null)
+                return NotFound();
+            
+            var ingredient = await _ingredientService.GetByKeyAsync(ingredientId);
+            if(ingredient == null) 
+                return NotFound();
+
+            if (ingredientId == 0)
+                return BadRequest();
+
+            food.RemoveIngredient(ingredientId);
+                        
+            await _foodService.UpdateAsync(food);
+            return Ok(food);
+        }
     }
 }

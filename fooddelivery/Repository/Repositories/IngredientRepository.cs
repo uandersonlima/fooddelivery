@@ -11,7 +11,7 @@ namespace fooddelivery.Repository.Repositories
         public IngredientRepository(FoodDeliveryContext context) : base(context)
         {
             _context = context;
-            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            //_context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
     }
 }

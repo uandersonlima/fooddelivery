@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -26,5 +27,20 @@ namespace fooddelivery.Models
         public List<Suborder> Suborders { get; set; }
         public List<Image> Images { get; set; }
         public List<FoodIngredients> FoodIngredients { get; set; }
+
+        public void AddIngredient(ulong ingredienteId)
+        {
+            FoodIngredients.Add(new FoodIngredients{FoodId = Id, IngredientId = ingredienteId});
+        }
+
+        internal void RemoveIngredient(ulong ingredientId)
+        {
+            var relational = FoodIngredients.Find(x=> x.IngredientId == ingredientId);
+            
+            if(relational == null) 
+                throw new ArgumentException("O arquimento não conta na lista de ingredientes");
+            
+            FoodIngredients.Remove(relational);
+        }
     }
 }
