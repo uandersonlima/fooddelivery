@@ -3,8 +3,11 @@ using fooddelivery.Models;
 using fooddelivery.Models.Constants;
 using fooddelivery.Models.Helpers;
 using fooddelivery.Service.Interfaces;
+using fooddelivery.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Options;
 
 namespace fooddelivery.Controllers.Api
 {
@@ -14,12 +17,18 @@ namespace fooddelivery.Controllers.Api
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
+        private readonly EmailSettings _emailsettings;
         private readonly IAuthService _authService;
+        private readonly IUserService _userService;
+        private readonly IHubContext<NotificationsHubService, INotificationsHubService> _notificationHub;
 
-        public OrdersController(IOrderService orderService, IAuthService authService)
+        public OrdersController(IOptions<EmailSettings> emailsettings, IOrderService orderService, IAuthService authService, IUserService userService, IHubContext<NotificationsHubService, INotificationsHubService> notificationHub)
         {
+            _emailsettings = emailsettings.Value;
             _orderService = orderService;
             _authService = authService;
+            _userService = userService;
+            _notificationHub = notificationHub;
         }
 
         [HttpGet("{id}")]
@@ -65,6 +74,7 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Create([FromBody] Order order)
         {
             if (order == null)
@@ -73,6 +83,10 @@ namespace fooddelivery.Controllers.Api
                 return UnprocessableEntity(ModelState);
 
             await _orderService.AddAsync(order);
+
+            var user = await _userService.GetUserByEmailAsync(_emailsettings.SmtpUser);
+            await _notificationHub.Clients.User(user.Id.ToString()).ReportNewPurchaseAsync(order, "Novo pedido!");
+            
             return Ok(order);
         }
 
@@ -104,6 +118,9 @@ namespace fooddelivery.Controllers.Api
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
             await _orderService.UpdateAsync(order);
+
+            await _notificationHub.Clients.User(order.UserId.ToString()).ReportNewPurchaseAsync(order, "Novo pedido!");
+
             return Ok(order);
         }
     }

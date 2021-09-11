@@ -172,11 +172,13 @@ namespace fooddelivery.Service.Extensions
             //Cors Policy
             svc.AddCors(options =>
             {
-                options.AddPolicy("WebPolicy",
-                    policy =>
-                    {
-                        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-                    });
+                options.AddPolicy("WebPolicy", policy =>
+                {
+                    policy.AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials()
+                            .SetIsOriginAllowed(hostName => true);
+                });
             });
 
             return svc;
@@ -204,7 +206,7 @@ namespace fooddelivery.Service.Extensions
             svc.AddAuthorization(options =>
             {
                 options.AddPolicy(Policy.EmailVerified, policy =>
-                                                        policy.RequireAssertion(context => 
+                                                        policy.RequireAssertion(context =>
                                                                 context.User.HasClaim(c => c.Value == Policy.EmailVerified || c.Value == Policy.Admin)));
                 options.AddPolicy(Policy.Admin, policy => policy.RequireRole(Policy.Admin));
             });

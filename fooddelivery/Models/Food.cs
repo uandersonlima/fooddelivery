@@ -14,6 +14,8 @@ namespace fooddelivery.Models
         [Required]
         public string Name { get; set; }
 
+        public string Description { get; set; }
+
         [Required]
         [Column(TypeName = "decimal(10, 2)")]
         public decimal Price { get; set; }
@@ -30,16 +32,16 @@ namespace fooddelivery.Models
 
         public void AddIngredient(ulong ingredienteId)
         {
-            FoodIngredients.Add(new FoodIngredients{FoodId = Id, IngredientId = ingredienteId});
+            FoodIngredients.Add(new FoodIngredients { FoodId = Id, IngredientId = ingredienteId });
         }
 
         internal void RemoveIngredient(ulong ingredientId)
         {
-            var relational = FoodIngredients.Find(x=> x.IngredientId == ingredientId);
-            
-            if(relational == null) 
+            var relational = FoodIngredients.Find(x => x.IngredientId == ingredientId);
+
+            if (relational == null)
                 throw new ArgumentException("O arquimento não conta na lista de ingredientes");
-            
+
             FoodIngredients.Remove(relational);
         }
     }

@@ -19,18 +19,16 @@ namespace fooddelivery.Service.Services
     {
         private readonly IAddressService _addressService;
         private readonly JWTSettings _jwtSettings;
-        private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly UserManager<User> _userManager;
         private readonly IHttpContextAccessor _contextAccessor;
 
 
-        public AuthService(IAddressService addressService, IOptions<JWTSettings> jwtSettings, SignInManager<User> signInManager, RoleManager<Role> roleManager,
+        public AuthService(IAddressService addressService, IOptions<JWTSettings> jwtSettings, RoleManager<Role> roleManager,
         UserManager<User> userManager, IHttpContextAccessor contextAccessor)
         {
             _addressService = addressService;
             _jwtSettings = jwtSettings.Value;
-            _signInManager = signInManager;
             _roleManager = roleManager;
             _userManager = userManager;
             _contextAccessor = contextAccessor;

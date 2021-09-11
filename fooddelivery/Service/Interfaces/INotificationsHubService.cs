@@ -16,5 +16,6 @@ namespace fooddelivery.Service.Interfaces
         
         Task UserIsConnectedAsync(ulong id);
         Task UserIsDisconnectedAsync(ulong id);
+
     }
 }
