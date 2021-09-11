@@ -44,6 +44,6 @@ jobs:
         application_name: delivery
         environment_name: delivery-env-1
         region: sa-east-1
-        version_label: ${{ github.run_id }}
+        version_label: ${{ github.run_id + 1 }}
         version_description: ${{ github.sha }}
         deployment_package: ${{ github.workspace }}/out.zip
