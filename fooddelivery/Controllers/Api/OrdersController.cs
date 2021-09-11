@@ -74,7 +74,6 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Create([FromBody] Order order)
         {
             if (order == null)
@@ -85,7 +84,8 @@ namespace fooddelivery.Controllers.Api
             await _orderService.AddAsync(order);
 
             var user = await _userService.GetUserByEmailAsync(_emailsettings.SmtpUser);
-            await _notificationHub.Clients.User(user.Id.ToString()).ReportNewPurchaseAsync(order, "Novo pedido!");
+            await _notificationHub.Clients.User(user.Id.ToString()).ReportNewPurchaseAsync(order, "Atualizado para o dono!");
+            await _notificationHub.Clients.All.ReportNewPurchaseAsync(order, "Atualizado para todos!");
             
             return Ok(order);
         }
