@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Authorization;
 using fooddelivery.Authorization.Requirement;
 using fooddelivery.Authorization.Handler;
 using fooddelivery.Models.Users;
+using System.Threading.Tasks;
 
 namespace fooddelivery.Service.Extensions
 {
@@ -185,22 +186,38 @@ namespace fooddelivery.Service.Extensions
         }
         public static IServiceCollection AddAuthorizationPolicies(this IServiceCollection svc, IConfiguration cfg)
         {
-            svc.AddAuthentication(x =>
+            svc.AddAuthentication(option =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(x =>
+            .AddJwtBearer(option =>
             {
                 var JWTBearer = cfg.GetSection("Auth:JWTBearer");
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
+                option.RequireHttpsMetadata = false;
+                option.SaveToken = true;
+                option.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JWTBearer["SecretKey"])),
                     ValidateIssuer = false,
                     ValidateAudience = false
+                };
+
+                option.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/notificationhubservice"))
+                        {
+                            context.Token = accessToken;
+                        }
+
+                        return Task.CompletedTask;
+                    }
                 };
             });
             svc.AddAuthorization(options =>
