@@ -220,11 +220,11 @@ namespace fooddelivery.Service.Extensions
                     }
                 };
             });
+
             svc.AddAuthorization(options =>
             {
                 options.AddPolicy(Policy.EmailVerified, policy =>
-                                                        policy.RequireAssertion(context =>
-                                                                context.User.HasClaim(c => c.Value == Policy.EmailVerified || c.Value == Policy.Admin)));
+                                                        policy.RequireAssertion(context => context.User.IsInRole(Policy.Admin) || context.User.HasClaim(c => c.Type == Policy.EmailVerified && c.Value == true.ToString())));
                 options.AddPolicy(Policy.Admin, policy => policy.RequireRole(Policy.Admin));
             });
             // svc
