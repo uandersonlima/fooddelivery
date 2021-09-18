@@ -14,7 +14,7 @@ namespace fooddelivery.Repository.Repositories
         public AddressTypeRepository(FoodDeliveryContext context) : base(context)
         {
             _context = context;
-            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            //_context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public bool HasValue()

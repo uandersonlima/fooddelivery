@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using fooddelivery.Models;
 using fooddelivery.Models.Constants;
@@ -56,7 +58,7 @@ namespace fooddelivery.Controllers.Api
             await _foodService.AddAsync(food);
             return Ok(food);
         }
-        
+
         [HttpDelete]
         [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Delete([FromQuery] ulong id)
@@ -69,7 +71,7 @@ namespace fooddelivery.Controllers.Api
             await _foodService.DeleteAsync(obj);
             return Ok($"codigo {id} removido");
         }
-        
+
         [HttpPut("{id}")]
         [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Update(ulong id, [FromBody] Food food)
@@ -84,14 +86,14 @@ namespace fooddelivery.Controllers.Api
 
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
-               
+
             await _foodService.UpdateAsync(food);
             return Ok(food);
         }
 
         [HttpPut("addingredient/{id}")]
         [Authorize(Policy = Policy.Admin)]
-        public async Task<IActionResult> AddIngredient(ulong id, [FromBody] ulong ingredientId, [FromServices] IIngredientService _ingredientService)
+        public async Task<IActionResult> AddIngredients(ulong id, [FromBody] List<ulong> ingredientIds, [FromServices] IIngredientService _ingredientService)
         {
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
@@ -99,15 +101,31 @@ namespace fooddelivery.Controllers.Api
             var food = await _foodService.GetByKeyAsync(id);
             if (food == null)
                 return NotFound();
-            
-            var ingredient = await _ingredientService.GetByKeyAsync(ingredientId);
-            if(ingredient == null) 
-                return NotFound();
 
-            if (ingredientId == 0)
-                return BadRequest();
+            if (ingredientIds.Count == 0)
+                return BadRequest("Informe os identificadores dos ingredientes");
 
-            food.AddIngredient(ingredientId);
+            var errors = new StringBuilder();
+
+            ingredientIds.ForEach(ingredientId =>
+            {
+                if (ingredientId == 0)
+                {
+                    errors.AppendLine($"identificador {ingredientId}, na posição {ingredientIds.IndexOf(ingredientId)} inválido!");
+                }
+                else
+                {
+                    var ingredient = _ingredientService.GetByKeyAsync(ingredientId).Result;
+                    if (ingredient == null)
+                        errors.AppendLine($"ingreditent referente ao identificador {ingredientId} não foi encontrado!");
+                }
+
+            });
+
+            if (errors.Length != 0)
+                return BadRequest(errors.ToString());
+
+            food.AddIngredient(ingredientIds);
 
             await _foodService.UpdateAsync(food);
             return Ok(food);
@@ -115,7 +133,7 @@ namespace fooddelivery.Controllers.Api
 
         [HttpPut("removeingredient/{id}")]
         [Authorize(Policy = Policy.Admin)]
-        public async Task<IActionResult> RemoveIngredient(ulong id, [FromBody] ulong ingredientId, [FromServices] IIngredientService _ingredientService)
+        public async Task<IActionResult> RemoveIngredients(ulong id, [FromBody] List<ulong> ingredientIds, [FromServices] IIngredientService _ingredientService)
         {
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
@@ -123,16 +141,31 @@ namespace fooddelivery.Controllers.Api
             var food = await _foodService.GetByKeyAsync(id);
             if (food == null)
                 return NotFound();
-            
-            var ingredient = await _ingredientService.GetByKeyAsync(ingredientId);
-            if(ingredient == null) 
-                return NotFound();
 
-            if (ingredientId == 0)
-                return BadRequest();
+            if (ingredientIds.Count == 0)
+                return BadRequest("Informe os identificadores dos ingredientes");
 
-            food.RemoveIngredient(ingredientId);
-                        
+            var errors = new StringBuilder();
+            ingredientIds.ForEach(ingredientId =>
+            {
+                if (ingredientId == 0)
+                {
+                    errors.Append($"identificador {ingredientId} inválido!");
+                }
+                else
+                {
+                    var ingredient = _ingredientService.GetByKeyAsync(ingredientId).Result;
+                    if (ingredient == null)
+                        errors.Append($"ingreditent referente ao identificador {ingredientId} não foi encontrado!");
+                }
+
+            });
+
+            if (errors.Length != 0)
+                return BadRequest(errors.ToString());
+
+            food.RemoveIngredient(ingredientIds);
+
             await _foodService.UpdateAsync(food);
             return Ok(food);
         }

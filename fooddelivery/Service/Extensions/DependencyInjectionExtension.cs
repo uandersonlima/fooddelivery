@@ -134,6 +134,7 @@ namespace fooddelivery.Service.Extensions
             svc.AddScoped<IDeliveryStatusService, DeliveryStatusService>();
             svc.AddScoped<IEmailService, EmailService>();
             svc.AddScoped<IFoodService, FoodService>();
+            svc.AddScoped<IFoodIngredientsService, FoodIngredientsService>();
             svc.AddScoped<IFeedbackService, FeedbackService>();
             svc.AddScoped<IImageService, ImageService>();
             svc.AddScoped<IIngredientService, IngredientService>();
@@ -152,6 +153,7 @@ namespace fooddelivery.Service.Extensions
             svc.AddScoped<IContactRepository, ContactRepository>();
             svc.AddScoped<IDeliveryStatusRepository, DeliveryStatusRepository>();
             svc.AddScoped<IFoodRepository, FoodRepository>();
+            svc.AddScoped<IFoodIngredientsRepository, FoodIngredientsRepository>();
             svc.AddScoped<IFeedbackRepository, FeedbackRepository>();
             svc.AddScoped<IImageRepository, ImageRepository>();
             svc.AddScoped<IIngredientRepository, IngredientRepository>();

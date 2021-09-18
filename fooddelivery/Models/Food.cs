@@ -30,19 +30,23 @@ namespace fooddelivery.Models
         public List<Image> Images { get; set; }
         public List<FoodIngredients> FoodIngredients { get; set; }
 
-        public void AddIngredient(ulong ingredienteId)
+        public void AddIngredient(List<ulong> ingredientIds)
         {
-            FoodIngredients.Add(new FoodIngredients { FoodId = Id, IngredientId = ingredienteId });
+            ingredientIds.ForEach(ingredientId => FoodIngredients.Add(new FoodIngredients { FoodId = Id, IngredientId = ingredientId }));
         }
 
-        internal void RemoveIngredient(ulong ingredientId)
+        internal void RemoveIngredient(List<ulong> ingredientIds)
         {
-            var relational = FoodIngredients.Find(x => x.IngredientId == ingredientId);
+            ingredientIds.ForEach(ingredientId =>
+            {
+                var relational = FoodIngredients.Find(x => x.IngredientId == ingredientId);
 
-            if (relational == null)
-                throw new ArgumentException("O arquimento não conta na lista de ingredientes");
+                if (relational == null)
+                    throw new ArgumentException("O arquimento não conta na lista de ingredientes");
 
-            FoodIngredients.Remove(relational);
+                FoodIngredients.Remove(relational);
+
+            });
         }
     }
 }
