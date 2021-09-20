@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using fooddelivery.Database;
@@ -49,5 +50,10 @@ namespace fooddelivery.Repository.Repositories
             return pagList;
         }
 
+        public async Task UpdateRangeAsync(List<Address> addresses)
+        {
+            _context.UpdateRange(addresses);
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -60,27 +60,30 @@ namespace fooddelivery.Controllers.Api
 
 
             await _categoryService.DeleteAsync(obj);
-            
+
             return Ok($"codigo {id} removido");
         }
 
-        [HttpPut ("{id}")]
+        [HttpPut("{id}")]
         [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Update(ulong id, [FromBody] Category category)
         {
+            if (id != category.Id)
+                return BadRequest("Id mismatched: " + id);
+
             var obj = await _categoryService.GetByKeyAsync(id);
 
             if (obj == null)
-                return NotFound();
-
-            if (category == null)
-                return BadRequest();
+                return NotFound("Conteúdo não encontrado");
 
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
-            await _categoryService.UpdateAsync(category);
-            return Ok(category);
+            obj.Name = category.Name;
+
+            await _categoryService.UpdateAsync(obj);
+
+            return Ok(obj);
         }
     }
 }

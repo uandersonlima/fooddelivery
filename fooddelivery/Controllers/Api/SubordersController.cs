@@ -57,22 +57,27 @@ namespace fooddelivery.Controllers.Api
             await _suborderService.DeleteAsync(obj);
             return Ok($"codigo {id} removido");
         }
-        
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(ulong id, [FromBody] Suborder suborder)
         {
+            if (id != suborder.Id)
+                return BadRequest("Id mismatched: " + id);
+
             var obj = await _suborderService.GetByKeyAsync(id);
 
             if (obj == null)
-                return NotFound();
-
-            if (suborder == null)
-                return BadRequest();
+                return NotFound("Conteúdo não encontrado");
 
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
-            await _suborderService.UpdateAsync(suborder);
-            return Ok(suborder);
+
+            obj.Price = suborder.Price;
+            obj.Note = suborder.Note;
+            obj.FoodId = suborder.FoodId;
+            await _suborderService.UpdateAsync(obj);
+
+            return Ok(obj);
         }
     }
 }

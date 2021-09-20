@@ -255,8 +255,5 @@ namespace fooddelivery.Controllers.Api
 
         }
 
-
-
-
     }
 }

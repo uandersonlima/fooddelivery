@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using fooddelivery.Models;
 using fooddelivery.Models.Constants;
@@ -81,12 +82,14 @@ namespace fooddelivery.Controllers.Api
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
+            order.ShoppingTime = DateTime.Now;
+
             await _orderService.AddAsync(order);
 
             var user = await _userService.GetUserByEmailAsync(_emailsettings.SmtpUser);
             await _notificationHub.Clients.User(user.Id.ToString()).ReportNewPurchaseAsync(order, "Atualizado para o dono!");
             await _notificationHub.Clients.All.ReportNewPurchaseAsync(order, "Atualizado para todos!");
-            
+
             return Ok(order);
         }
 
@@ -107,21 +110,23 @@ namespace fooddelivery.Controllers.Api
         [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Update(ulong id, [FromBody] Order order)
         {
+            if (id != order.Id)
+                return BadRequest("Id mismatched: " + id);
+
             var obj = await _orderService.GetByKeyAsync(id);
 
             if (obj == null)
-                return NotFound();
-
-            if (order == null)
-                return BadRequest();
+                return NotFound("Conteúdo não encontrado");
 
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
-            await _orderService.UpdateAsync(order);
 
+            obj.DeliveryStatusId = order.DeliveryStatusId;
+
+            await _orderService.UpdateAsync(obj);
             await _notificationHub.Clients.User(order.UserId.ToString()).ReportNewPurchaseAsync(order, "Novo pedido!");
-
-            return Ok(order);
+            
+            return Ok(obj);
         }
     }
 }

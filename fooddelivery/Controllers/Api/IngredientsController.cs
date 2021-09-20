@@ -33,7 +33,7 @@ namespace fooddelivery.Controllers.Api
             var results = await _ingredientService.GetAllAsync(appview, x => x.Name.Contains(appview.Search));
             return Ok(results);
         }
-        
+
         [HttpPost]
         [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Create([FromBody] Ingredient ingredient)
@@ -63,18 +63,23 @@ namespace fooddelivery.Controllers.Api
         [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Update(ulong id, [FromBody] Ingredient ingredient)
         {
+            if (id != ingredient.Id)
+                return BadRequest("Id mismatched: " + id);
+
             var obj = await _ingredientService.GetByKeyAsync(id);
 
             if (obj == null)
-                return NotFound();
-
-            if (ingredient == null)
-                return BadRequest();
+                return NotFound("Conteúdo não encontrado");
 
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
-            await _ingredientService.UpdateAsync(ingredient);
-            return Ok(ingredient);
+
+            obj.Name = ingredient.Name;
+            obj.Price = ingredient.Price;
+            obj.Unity = ingredient.Unity;
+
+            await _ingredientService.UpdateAsync(obj);
+            return Ok(obj);
         }
     }
 }

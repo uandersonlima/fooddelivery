@@ -63,18 +63,26 @@ namespace fooddelivery.Controllers.Api
         [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Update(ulong id, [FromBody] Image image)
         {
+            if (id != image.Id)
+                return BadRequest("Id mismatched: " + id);
+
             var obj = await _imageService.GetByKeyAsync(id);
 
             if (obj == null)
-                return NotFound();
-
-            if (image == null)
-                return BadRequest();
+                return NotFound("Conteúdo não encontrado");
 
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
-            await _imageService.UpdateAsync(image);
-            return Ok(image);
+
+            obj.Name = image.Name;
+            obj.Type = image.Type;
+            obj.Data = image.Data;
+            obj.Size = image.Size;
+            obj.FoodId = image.FoodId;
+
+            await _imageService.UpdateAsync(obj);
+
+            return Ok(obj);
         }
     }
 }

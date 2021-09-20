@@ -1,5 +1,6 @@
 using System;
 using System.Device.Location;
+using System.Linq;
 using System.Threading.Tasks;
 using fooddelivery.Models;
 using fooddelivery.Models.Constants;
@@ -79,6 +80,7 @@ namespace fooddelivery.Controllers.Api
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
+
             await _addressService.AddAsync(address);
             return Ok(address);
         }
@@ -88,7 +90,7 @@ namespace fooddelivery.Controllers.Api
         public async Task<IActionResult> Delete([FromQuery] ulong id)
         {
             var obj = await _addressService.GetByKeyAsync(id);
-           
+
             if (obj == null)
                 return NotFound("recurso não encontrado");
             if (obj.isDeleted)
@@ -113,23 +115,33 @@ namespace fooddelivery.Controllers.Api
         public async Task<IActionResult> Update(ulong id, [FromBody] Address address)
         {
 
+            if (id != address.Id)
+                return BadRequest("Id mismatched: " + id);
+
             var obj = await _addressService.GetByKeyAsync(id);
 
             if (obj == null)
-                return NotFound();
+                return NotFound("Conteúdo não encontrado");
 
             if (obj.isDeleted)
                 return BadRequest("Não é possível atualizar esse endereço, pois ele já foi logicamente deletado");
 
-            if (address == null)
-                return BadRequest();
-
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
+            obj.Number = address.Number;
+            obj.City = address.City;
+            obj.Neighborhood = address.Neighborhood;
+            obj.State = address.State;
+            obj.Addon = address.Addon;
+            obj.AddressTypeId = address.AddressTypeId;
+            obj.X_coordinate = address.X_coordinate;
+            obj.Y_coordinate = address.Y_coordinate;
 
-            await _addressService.UpdateAsync(address);
-            return Ok(address);
+            await _addressService.UpdateAsync(obj);
+
+            return Ok(obj);
+
         }
 
         [HttpGet("distance")]
@@ -149,6 +161,38 @@ namespace fooddelivery.Controllers.Api
             var location_02 = new GeoCoordinate(address_02.X_coordinate.Value, address_02.Y_coordinate.Value);
 
             return Ok(_addressService.CalculateDistanceBetweenLocations(location_01, location_02));
+        }
+
+        [HttpPut("standardAddress/{AddressId}")]
+        public async Task<IActionResult> StandardAddress(ulong AddressId)
+        {
+            var loggedInUser = await _authService.GetLoggedUserAsync();
+            var listAddress = await _addressService.GetAllByUserIdAsync(loggedInUser.Id, new AppView());
+            var succeeded = listAddress.Any(address => address.Id == AddressId);
+
+            if (succeeded)
+                listAddress.ForEach(address => address.Standard = address.Id == AddressId ? true : false);
+            else
+                return BadRequest("Não foi possível alterar o endereço informado como principal, verifique se o endereço informado corresponde ao usuário solicitante!");
+
+            loggedInUser.Addresses = null; /*Remove erro de tracking*/
+            await _addressService.UpdateRangeAsync(listAddress);
+
+            return Ok(listAddress.Select(address => new Address
+            {
+                Id = address.Id,
+                Number = address.Number,
+                City = address.City,
+                Neighborhood = address.Neighborhood,
+                State = address.State,
+                Addon = address.Addon,
+                Standard = address.Standard,
+                AddressTypeId = address.AddressTypeId,
+                X_coordinate = address.X_coordinate,
+                Y_coordinate = address.Y_coordinate,
+                UserId = address.UserId
+
+            }).Where(address => address.Id == AddressId).FirstOrDefault());
         }
     }
 }

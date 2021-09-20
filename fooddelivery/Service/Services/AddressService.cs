@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Device.Location;
 using System.Threading.Tasks;
 using fooddelivery.Models;
@@ -27,6 +28,9 @@ namespace fooddelivery.Service.Services
             return new { Distance_metros = distance, Distance_KM = distance / 1000 };
         }
 
-
+        public async Task UpdateRangeAsync(List<Address> addresses)
+        {
+            await _repository.UpdateRangeAsync(addresses);
+        }
     }
 }

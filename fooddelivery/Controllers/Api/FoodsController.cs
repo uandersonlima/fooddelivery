@@ -76,19 +76,27 @@ namespace fooddelivery.Controllers.Api
         [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Update(ulong id, [FromBody] Food food)
         {
+            if (id != food.Id)
+                return BadRequest("Id mismatched: " + id);
+
             var obj = await _foodService.GetByKeyAsync(id);
 
             if (obj == null)
-                return NotFound();
-
-            if (food == null)
-                return BadRequest();
+                return NotFound("Conteúdo não encontrado");
 
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
-            await _foodService.UpdateAsync(food);
-            return Ok(food);
+            obj.Name = food.Name;
+            obj.Description = food.Description;
+            obj.Price = food.Price;
+            obj.IsAppetizer = food.IsAppetizer;
+            obj.Available = food.Available;
+            obj.CategoryId = food.CategoryId;
+
+            await _foodService.UpdateAsync(obj);
+
+            return Ok(obj);
         }
 
         [HttpPut("addingredient/{id}")]
