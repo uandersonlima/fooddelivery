@@ -29,10 +29,9 @@ namespace fooddelivery.Database
         public DbSet<PaymentType> PaymentTypes { get; set; }
         public DbSet<Suborder> Suborders { get; set; }
         public DbSet<TokenJWT> TokensJWT { get; set; }
-
+        public DbSet<Guimarkz_commands> Commands { get; set; }
 
         //Contracts
-        public DbSet<Additional> Additional { get; set; }
         public DbSet<Feedbacks> Feedbacks { get; set; }
         public DbSet<FoodIngredients> FoodIngredients { get; set; }
 
@@ -88,7 +87,7 @@ namespace fooddelivery.Database
             );
 
             modelBuilder.Entity<Role>().HasData(
-                    new Role { Id = 1, Name = "Administrator", NormalizedName = "Administrator"},
+                    new Role { Id = 1, Name = "Administrator", NormalizedName = "Administrator" },
                     new Role { Id = 2, Name = "Common", NormalizedName = "Common" }
             );
 
