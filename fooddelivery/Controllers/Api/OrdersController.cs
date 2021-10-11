@@ -87,8 +87,10 @@ namespace fooddelivery.Controllers.Api
             await _orderService.AddAsync(order);
 
             var user = await _userService.GetUserByEmailAsync(_emailsettings.SmtpUser);
-            await _notificationHub.Clients.User(user.Id.ToString()).ReportNewPurchaseAsync(order, "Atualizado para o dono!");
-            await _notificationHub.Clients.All.ReportNewPurchaseAsync(order, "Atualizado para todos!");
+
+
+            await _notificationHub.Clients.User(user.Id.ToString()).ReportNewPurchaseAsync(order, "Novo pedido!");
+            //await _notificationHub.Clients.All.ReportNewPurchaseAsync(order, "Atualizado para todos!");
 
             return Ok(order);
         }
@@ -124,7 +126,10 @@ namespace fooddelivery.Controllers.Api
             obj.DeliveryStatusId = order.DeliveryStatusId;
 
             await _orderService.UpdateAsync(obj);
-            await _notificationHub.Clients.User(order.UserId.ToString()).ReportNewPurchaseAsync(order, "Novo pedido!");
+
+            
+
+            await _notificationHub.Clients.User(obj.UserId.ToString()).ReportNewPurchaseAsync(order, "Situação pedido mudou!");
             
             return Ok(obj);
         }

@@ -23,10 +23,10 @@ namespace fooddelivery.Controllers.Api
             _authService = authService;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(ulong id)
+        [HttpGet("{userId}/{orderId}")]
+        public async Task<IActionResult> Get(ulong userId, ulong orderId)
         {
-            var result = await _feedService.GetByKeyAsync(id);
+            var result = await _feedService.GetByKeyAsync(userId, orderId);
             if (result == null)
             {
                 return NotFound();
@@ -43,7 +43,6 @@ namespace fooddelivery.Controllers.Api
             return Ok(result);
         }
 
-
         [HttpGet("AllByUserId/{userId}")]
         public async Task<IActionResult> GetAll(ulong userId, [FromQuery] AppView appview)
         {
@@ -54,7 +53,7 @@ namespace fooddelivery.Controllers.Api
                 var loggedInUser = await _authService.GetLoggedUserAsync();
                 if (!isAdmin && results[0].UserId != loggedInUser.Id)
                 {
-                    return Unauthorized("Você não tem permissão para ver esse endereço");
+                    return Unauthorized("Você não tem permissão para ver esse feedback");
                 }
             }
             return Ok(results);
@@ -80,34 +79,34 @@ namespace fooddelivery.Controllers.Api
             return Ok(feedbacks);
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] ulong id)
+        [HttpDelete("{userId}/{orderId}")]
+        public async Task<IActionResult> Delete(ulong userId, ulong orderId)
         {
 
-            var obj = await _feedService.GetByKeyAsync(id);
-            if (obj == null)
+            var result = await _feedService.GetByKeyAsync(userId, orderId);
+            if (result is null)
                 return NotFound("recurso não encontrado");
 
-            await _feedService.DeleteAsync(obj);
-            return Ok($"codigo {id} removido");
+            await _feedService.DeleteAsync(result);
+            return Ok($"Feedback do pedido {orderId} do usuário {userId} removido");
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(ulong id, [FromBody] Feedbacks feedbacks)
+        [HttpPut("{userId}/{orderId}")]
+        public async Task<IActionResult> Update(ulong userId, ulong orderId, [FromBody] Feedbacks feedbacks)
         {
-            var obj = await _feedService.GetByKeyAsync(id);
+            var obj = await _feedService.GetByKeyAsync(userId, orderId);
 
-            if (obj == null)
+            if (obj is null)
                 return NotFound();
-
-            if (feedbacks == null)
-                return BadRequest();
 
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
-            await _feedService.UpdateAsync(feedbacks);
-            return Ok(feedbacks);
+            obj.Note = feedbacks.Note;
+            obj.Score = feedbacks.Score;
+
+            await _feedService.UpdateAsync(obj);
+            return Ok(obj);
         }
     }
 }

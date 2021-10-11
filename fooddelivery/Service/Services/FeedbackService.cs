@@ -15,6 +15,11 @@ namespace fooddelivery.Service.Services
             _repository = repository;
         }
 
+        public async Task<Feedbacks> GetByKeyAsync(ulong userId, ulong orderId)
+        {
+            return await _repository.GetByKeyAsync(userId, orderId); 
+        }
+
         public async Task<PaginationList<Feedbacks>> GetAllByUserIdAsync(ulong userId, AppView appview)
         {
             return await _repository.GetAllByUserIdAsync(userId, appview);

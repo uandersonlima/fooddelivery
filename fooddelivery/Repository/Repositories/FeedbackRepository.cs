@@ -25,6 +25,11 @@ namespace fooddelivery.Repository.Repositories
             return await _context.Feedbacks.FindAsync(null, id);
         }
 
+        public async Task<Feedbacks> GetByKeyAsync(ulong userId, ulong orderId)
+        {
+            return await _context.Feedbacks.FindAsync(userId, orderId);
+        }
+
         public override async Task<PaginationList<Feedbacks>> GetAllAsync(AppView appview, Expression<Func<Feedbacks, bool>> predicate)
         {
             var pagList = new PaginationList<Feedbacks>();
@@ -92,5 +97,7 @@ namespace fooddelivery.Repository.Repositories
             pagList.AddRange(await result.ToListAsync());
             return pagList;
         }
+
+
     }
 }

@@ -59,7 +59,6 @@ namespace fooddelivery.Repository.Repositories
             var pagList = new PaginationList<Order>();
             var result = _context.Orders.Where(order => order.UserId == userId)
                                         .Include(order => order.Suborders)
-                                        .ThenInclude(sub => sub.Order)
                                         .AsNoTracking().AsQueryable();
 
             if (appview.CheckSearch())

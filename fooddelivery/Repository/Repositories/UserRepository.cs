@@ -93,7 +93,7 @@ namespace fooddelivery.Repository.Repositories
 
         public async Task<User> GetUserByIdAsync(ulong id)
         {
-            return await _userManager.Users.FirstOrDefaultAsync(user => user.Id == id);
+            return await _userManager.FindByIdAsync(id.ToString());
         }
 
         public async Task<User> GetUserByEmailAsync(string email)
