@@ -14,7 +14,7 @@ namespace fooddelivery.Models.DTO
 
         [Required(ErrorMessage = "Informe o campo {0}", AllowEmptyStrings = false)]
         [Display(Name = "Confirme a senha")]
-        [Compare("Password", ErrorMessage = "Senhas diferentes")]
+        [Compare("NewPassword", ErrorMessage = "Senhas diferentes")]
         [DataType(DataType.Password)]
         public string NewPasswordConfirmation { get; set; }
     }
