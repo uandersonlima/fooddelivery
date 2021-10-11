@@ -46,8 +46,12 @@ namespace fooddelivery.Controllers.Api
         public async Task<IActionResult> NewEmailConfirmation()
         {
             var loggedInUser = await _authService.GetLoggedUserAsync();
+
             if (loggedInUser is null)
                 return BadRequest();
+
+            if (loggedInUser.EmailConfirmed)
+                return UnprocessableEntity("O email já foi confirmado");
 
             var serverkey = new AccessKey { Email = loggedInUser.Email, KeyType = KeyType.Verification };
             var elapsedTime = await _keyService.ElapsedTimeAsync(serverkey);
@@ -93,8 +97,8 @@ namespace fooddelivery.Controllers.Api
                 user.EmailConfirmed = !user.EmailConfirmed;
                 await _userService.UpdateAsync(user);
                 await _keyService.DeleteAsync(serverKey);
-                await _userManager.RemoveClaimAsync(user, new Claim(Policy.EmailVerified, false.ToString()));   
-                await _userManager.AddClaimAsync(user, new Claim(Policy.EmailVerified, true.ToString()));   
+                await _userManager.RemoveClaimAsync(user, new Claim(Policy.EmailVerified, false.ToString()));
+                await _userManager.AddClaimAsync(user, new Claim(Policy.EmailVerified, true.ToString()));
                 return Ok("Email confirmado com sucesso");
             }
             return Ok("Email já foi confirmado");
@@ -212,7 +216,7 @@ namespace fooddelivery.Controllers.Api
         public async Task<IActionResult> Update([FromBody] UserProfile ClientUser)
         {
             var ServerUser = await _authService.GetLoggedUserAsync();
-            if(ServerUser.Id != ClientUser.Id)
+            if (ServerUser.Id != ClientUser.Id)
                 return BadRequest("Usuário não pode atualizar esse perfil");
 
             var DbUser = await _userService.GetUserByIdAsync(ClientUser.Id);
