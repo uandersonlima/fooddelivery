@@ -155,7 +155,11 @@ namespace fooddelivery.Controllers.Api
             if (errors.Length != 0)
                 return UnprocessableEntity(errors.ToString());
             else
+            { 
+                await _keyService.DeleteAsync(serverKey);
                 return Ok("Password updated");
+            }
+                
         }
 
         [HttpPut("ChangePassword")]
