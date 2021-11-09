@@ -72,6 +72,7 @@ namespace fooddelivery.Controllers.Api
         public async Task<IActionResult> ConfirmEmail([FromBody] ClientKeyDTO clientKeyDto)
         {
             //A partir do teu authorization recupera o usuário logado.
+            //mod
             var loggedInUser = await _authService.GetLoggedUserAsync();
             if (loggedInUser is null)
                 return Unauthorized("é preciso estar logado para confirmar o email");
