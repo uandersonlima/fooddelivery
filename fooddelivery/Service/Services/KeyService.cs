@@ -42,7 +42,7 @@ namespace fooddelivery.Service.Services
             {
                 Key = key,
                 KeyType = keyType,
-                DataGerada = DateTime.Now,
+                DataGerada = DateTime.UtcNow,
                 Email = user.Email
             };
 
@@ -61,7 +61,7 @@ namespace fooddelivery.Service.Services
             var previousCodigo = await SearchKeyByEmailAndTypeAsync(accessKey.Email, accessKey.KeyType);
             if (!(previousCodigo is null))
             {
-                return DateTime.Now.Subtract(previousCodigo.DataGerada);
+                return DateTime.UtcNow.Subtract(previousCodigo.DataGerada);
             }
             return new TimeSpan(0, 15, 0);
         }

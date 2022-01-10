@@ -57,7 +57,7 @@ namespace fooddelivery.Controllers.Api
                 return NotFound("refreshtoken already used or not exist");
 
 
-            refreshTokenDB.Updated = DateTime.Now;
+            refreshTokenDB.Updated = DateTime.UtcNow;
             refreshTokenDB.Used = true;
             await _tokenJWTService.UpdateAsync(refreshTokenDB);
 
@@ -83,7 +83,7 @@ namespace fooddelivery.Controllers.Api
                 ExpirationToken = token.Expiration,
                 ExpirationRefreshToken = token.ExpirationRefreshToken,
                 UserId = user.Id,
-                Created = DateTime.Now,
+                Created = DateTime.UtcNow,
                 Used = false
             };
             await _tokenJWTService.AddAsync(tokenModel);

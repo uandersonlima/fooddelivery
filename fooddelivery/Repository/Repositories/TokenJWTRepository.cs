@@ -31,7 +31,7 @@ namespace fooddelivery.Repository.Repositories
 
         public async Task<List<TokenJWT>> GetAllTokensUsedOrExpiredAsync()
         {
-            return await _context.TokensJWT.Where(tok => tok.ExpirationRefreshToken < DateTime.Now || tok.Used == true).ToListAsync();
+            return await _context.TokensJWT.Where(tok => tok.ExpirationRefreshToken < DateTime.UtcNow || tok.Used == true).ToListAsync();
         }
 
         public async Task DeleteMultiplesAsync(List<TokenJWT> tokensJWT)

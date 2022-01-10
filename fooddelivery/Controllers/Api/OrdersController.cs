@@ -82,14 +82,14 @@ namespace fooddelivery.Controllers.Api
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
-            order.ShoppingTime = DateTime.Now;
+            order.ShoppingTime = DateTime.UtcNow;
 
             await _orderService.AddAsync(order);
 
             var user = await _userService.GetUserByEmailAsync(_emailsettings.SmtpUser);
 
 
-            await _notificationHub.Clients.User(user.Id.ToString()).ReportNewPurchaseAsync(order, "Novo pedido!");
+            await _notificationHub.Clients.User(user.Id.ToString()).ReportNewPurchaseAsync("Novo pedido!");
             //await _notificationHub.Clients.All.ReportNewPurchaseAsync(order, "Atualizado para todos!");
 
             return Ok(order);
@@ -109,7 +109,6 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpPut("{id}")]
-        [Authorize(Policy = Policy.Admin)]
         public async Task<IActionResult> Update(ulong id, [FromBody] Order order)
         {
             if (id != order.Id)
@@ -117,21 +116,27 @@ namespace fooddelivery.Controllers.Api
 
             var obj = await _orderService.GetByKeyAsync(id);
 
-            if (obj == null)
-                return NotFound("Conteúdo não encontrado");
+            var isAdmin = HttpContext.User.IsInRole(Policy.Admin);
+            var loggedInUser = await _authService.GetLoggedUserAsync();
 
-            if (!ModelState.IsValid)
-                return UnprocessableEntity(ModelState);
+            if ((obj.DeliveryStatusId is 1 && obj.UserId == loggedInUser.Id && order.DeliveryStatusId is 7) || isAdmin)
+            {
+                if (obj == null)
+                    return NotFound("Conteúdo não encontrado");
 
-            obj.DeliveryStatusId = order.DeliveryStatusId;
+                if (!ModelState.IsValid)
+                    return UnprocessableEntity(ModelState);
 
-            await _orderService.UpdateAsync(obj);
+                obj.DeliveryStatusId = order.DeliveryStatusId;
 
-            
+                await _orderService.UpdateAsync(obj);
 
-            await _notificationHub.Clients.User(obj.UserId.ToString()).ReportNewPurchaseAsync(order, "Situação pedido mudou!");
-            
-            return Ok(obj);
+                await _notificationHub.Clients.User(obj.UserId.ToString()).ReportNewPurchaseAsync("Situação pedido mudou!");
+
+                return Ok(obj);
+            }
+
+            return Unauthorized("Você não pode atualizar esse pedido!");
         }
     }
 }

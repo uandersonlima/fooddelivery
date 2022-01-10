@@ -100,7 +100,7 @@ namespace fooddelivery.Controllers.Api
 
             if (orderQuantity.Count > 0)
             {
-                obj.DeleteDate = DateTime.Now;
+                obj.DeleteDate = DateTime.UtcNow;
                 obj.isDeleted = true;
                 await _addressService.UpdateAsync(obj);
             }

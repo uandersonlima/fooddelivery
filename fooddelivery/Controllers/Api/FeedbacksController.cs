@@ -3,8 +3,11 @@ using fooddelivery.Models.Constants;
 using fooddelivery.Models.Contracts;
 using fooddelivery.Models.Helpers;
 using fooddelivery.Service.Interfaces;
+using fooddelivery.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Options;
 
 namespace fooddelivery.Controllers.Api
 {
@@ -68,7 +71,7 @@ namespace fooddelivery.Controllers.Api
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Feedbacks feedbacks)
+        public async Task<IActionResult> Create([FromServices] IUserService userService, [FromServices] IOptions<EmailSettings> emailsettings, [FromServices] IHubContext<NotificationsHubService, INotificationsHubService> notificationHub, [FromBody] Feedbacks feedbacks)
         {
             if (feedbacks == null)
                 return BadRequest();
@@ -76,6 +79,11 @@ namespace fooddelivery.Controllers.Api
                 return UnprocessableEntity(ModelState);
 
             await _feedService.AddAsync(feedbacks);
+
+
+            var user = await userService.GetUserByEmailAsync(emailsettings.Value.SmtpUser);
+            await notificationHub.Clients.User(user.Id.ToString()).ReportFeedbacksUpdatesAsync("Novo feedback!");
+
             return Ok(feedbacks);
         }
 

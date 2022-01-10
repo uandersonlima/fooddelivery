@@ -58,8 +58,14 @@ namespace fooddelivery.Repository.Repositories
         {
             var pagList = new PaginationList<Order>();
             var result = _context.Orders.Where(order => order.UserId == userId)
-                                        .Include(order => order.Suborders)
-                                        .AsNoTracking().AsQueryable();
+                                                .Include(order => order.User)
+                                                .Include(order => order.Address)
+                                                .Include(order => order.Suborders)
+                                                .ThenInclude(sub => sub.Food)
+                                                .ThenInclude(food => food.Images)
+                                                .AsNoTracking().AsQueryable();
+
+
 
             if (appview.CheckSearch())
             {
