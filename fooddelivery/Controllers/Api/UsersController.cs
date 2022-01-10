@@ -156,11 +156,11 @@ namespace fooddelivery.Controllers.Api
             if (errors.Length != 0)
                 return UnprocessableEntity(errors.ToString());
             else
-            { 
+            {
                 await _keyService.DeleteAsync(serverKey);
                 return Ok("Password updated");
             }
-                
+
         }
 
         [HttpPut("ChangePassword")]
@@ -237,8 +237,6 @@ namespace fooddelivery.Controllers.Api
                 return Ok(DbUser);
         }
 
-
-
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(ulong id)
         {
@@ -262,6 +260,22 @@ namespace fooddelivery.Controllers.Api
                 return NotFound("user not found");
             }
 
+        }
+
+
+        [Authorize(Policy.Admin), HttpPut("BlockOrUnBlock")]
+        public async Task<IActionResult> BlockOrUnBlock([FromBody] ulong UserId)
+        {
+            var serverUser = await _userService.GetUserByIdAsync(UserId);
+            var isAdmin = await _userManager.IsInRoleAsync(serverUser, Policy.Admin);
+            if (!isAdmin)
+            {
+                serverUser.blockedUser = !serverUser.blockedUser;
+                await _userService.UpdateAsync(serverUser);
+
+                return serverUser.blockedUser == true ? Ok($"{serverUser.Name} foi bloqueado com sucesso!") : Ok($"{serverUser.Name} foi desbloqueado com sucesso!");
+            }
+            return BadRequest("Você tentou bloquear um usuário administrador!");
         }
 
     }

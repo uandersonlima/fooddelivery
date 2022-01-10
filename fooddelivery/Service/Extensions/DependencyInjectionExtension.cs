@@ -227,6 +227,8 @@ namespace fooddelivery.Service.Extensions
 
             svc.AddAuthorization(options =>
             {
+                //Bloquear todas as partes para usuário bloqueado
+                //options.AddPolicy("usuário bloqueado", policy => policy.RequireAssertion(context => ))
                 options.AddPolicy(Policy.EmailVerified, policy =>
                                                         policy.RequireAssertion(context => context.User.IsInRole(Policy.Admin) || context.User.HasClaim(c => c.Type == Policy.EmailVerified && c.Value == true.ToString())));
                 options.AddPolicy(Policy.Admin, policy => policy.RequireRole(Policy.Admin));

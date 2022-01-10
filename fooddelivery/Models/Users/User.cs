@@ -9,7 +9,7 @@ namespace fooddelivery.Models.Users
     {
         public override ulong Id { get; set; }
         public string Name { get; set; }
-
+        public bool blockedUser { get; set; }
         public string CPF { get; set; }
 
         public List<Contact> Contacts { get; set; }
